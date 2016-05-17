@@ -1,0 +1,9 @@
+# feature request  vs tasks to do
+ ☐ basic setup of the repository tree
+ ☐ add tests
+ ☐ setup CI configuration with travis
+ ☐ allow coverage report
+ ☐ submit on PyPI
+ ☐ provide a wheel package
+ ☐ write the docstrings for all functions
+ ☐ write a properly readme.md with gifs showing the basic usage
