@@ -7,8 +7,18 @@ Collection of decorators, a properly README will be write in soon. For now only 
 
 ## Installation
 
+**WARNING**: This project is still in current development at alpha! Don't use in serious/production application yet.
+
+
 #### Users
+
+stable:
+`sudo pip install decorating`
+
+
+bleeding-edge:
 `sudo pip install git+https://www.github.com/ryukinix/decorating`
+
 
 #### Developers
 
