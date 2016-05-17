@@ -11,6 +11,7 @@ EGG = *.egg-info
 CHECK = check --metadata --restructuredtext --strict
 CLEAN = clean
 UNINSTALL = --uninstall
+BUILD = build
 
 all: install
 	 clean
@@ -34,6 +35,13 @@ install:
 	@echo "|    INSTALL    |"
 	@echo "+===============+"
 	$(PYTHON) $(TARGET) $(INSTALL)
+
+build:
+	@echo "+===============+"
+	@echo "|    BUILD      |"
+	@echo "+===============+"
+	$(PYTHON) $(TARGET) $(BUILD)
+
 
 develop:
 	@echo "+===============+"
@@ -92,6 +100,8 @@ help:
 	@echo "make install:"
 	@echo "	 install the package in your system"
 	@echo 
+	@echo "make build:"
+	@echo "  build the package as egg-file"
 	@echo "make develop:"
 	@echo "	 install in develop mode (symlink)"
 	@echo 
