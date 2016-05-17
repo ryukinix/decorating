@@ -32,7 +32,7 @@ else:
 setup(
     name='decorating',
     version=decorating.__version__,
-    description="A useful collection of decoratores (focused in animation)",
+    description="A useful collection of decorators (focused in animation)",
     long_description=long_description,
     classifiers=[
         "Environment :: Console",
