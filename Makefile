@@ -6,7 +6,7 @@ TEST_DEPLOY = sdist upload --repository pypitest
 TEST_REGISTER = register --repository pypitest
 DEPLOY = sdist upload --repository pypi
 REGISTER = register --repository pypi
-BUILD = build/ dist/
+BUILD_GARBAGE = build/ dist/
 EGG = *.egg-info 
 CHECK = check --metadata --restructuredtext --strict
 CLEAN = clean
@@ -28,7 +28,7 @@ clean:
 	@echo "+===============+"
 	$(PYTHON) $(TARGET) $(CLEAN)
 	find . -name __pycache__ -or -name *.pyc| xargs rm -rfv;
-	rm -rfv $(BUILD)
+	rm -rfv $(BUILD_GARBAGE)
 
 install:
 	@echo "+===============+"
