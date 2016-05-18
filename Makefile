@@ -14,7 +14,7 @@ UNINSTALL = --uninstall
 BUILD = sdist bdist_wheel
 
 all: install
-	 clean
+	 @make clean
 
 check:
 	@echo "+===============+"
