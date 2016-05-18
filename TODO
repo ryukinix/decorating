@@ -2,6 +2,8 @@
  ✔ basic setup of the repository tree @done (16-05-17 17:55)
  ✔ submit on PyPI @done (16-05-17 18:37)
  ✔ setup CI configuration with travis @done (16-05-17 22:07)
+ ✔ add a animated decorator for slow functions @done (16-05-18 05:17)
+ ☐ add basics decorators: cache, time_count, debug e etc
  ☐ add tests
  ☐ allow coverage report
  ☐ provide a wheel package

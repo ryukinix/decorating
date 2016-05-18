@@ -1,4 +1,3 @@
  ☐ v0.1
-   ☐ task1
-   ☐ task2
-   ☐ task3
+   ✔ add a animated decorator for slow functions @done (16-05-18 05:16)
+   ☐ add basics decorators: cache, time_count, debug e etc
