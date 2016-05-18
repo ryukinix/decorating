@@ -88,7 +88,7 @@ def _spinner(control):
 
 # deal with it
 def animated(func_or_message):
-    def _animated(func)
+    def _animated(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             global last_thread
