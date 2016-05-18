@@ -104,18 +104,18 @@ def animated(func_or_message):
                 spinner_thread.join()
                 wrapper.running = False
                 sig.done = False
-    
+
             return result
-    
+
         wrapper.running = False
-    
+
         return wrapper
-        
-    if callable(func_or_message):  # function
+
+    if callable(func_or_message):  # function, no args
         name = func_or_message.__name__
         return _animated(func_or_message)
     else:
-        name = func_or_message
+        name = func_or_message  # string, with args
         return _animated
 
 # END OF THE LOL ZONE
