@@ -13,21 +13,26 @@ from os import path
 from warnings import warn
 import decorating
 
-try:
-    import pypandoc
-except ImportError:
-    warn("Only-for-developers: you need pypandoc for upload "
-         "correct reStructuredText into PyPI home page")
-
 here = path.abspath(path.dirname(__file__))
 readme = path.join(here, 'README.md')
 
-if 'pypandoc' in globals():
+try:
+    import pypandoc
     long_description = pypandoc.convert(readme, 'rst', format='markdown')
-else:
+except ImportError:
+    warn("Only-for-developers: you need pypandoc for upload "
+         "correct reStructuredText into PyPI home page")
     # Get the long description from the relevant file
     with open(readme, encoding='utf-8') as f:
         long_description = f.read()
+
+
+with open('requirements.txt') as f:
+    install_requires = list(map(str.strip, f.readlines()))
+
+with open('requirements-dev.txt') as f:
+    develop_requires = list(map(str.strip, f.readlines()))
+
 
 setup(
     name='decorating',
@@ -57,15 +62,15 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples',
                                     'tests', 'docs', '__pycache__']),
     platforms='unix',
-    install_requires=[
-        x.strip() for x in open('requirements.txt').readlines()
-    ],
+    install_requires=install_requires,
+    extras_require={
+        'develop': develop_requires,
+        "Requires-Dist": ["pypandoc"]
+    },
+
     entry_points={  # no entry-points yet
         # 'console_scripts': [
         #     'decorating = decorating.cli:main'
         # ]
     },
-    extras_require={
-        "Requires-Dist": ["pypandoc"]
-    }
 )
