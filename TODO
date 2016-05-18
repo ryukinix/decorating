@@ -3,6 +3,8 @@
  ✔ submit on PyPI @done (16-05-17 18:37)
  ✔ setup CI configuration with travis @done (16-05-17 22:07)
  ✔ add a animated decorator for slow functions @done (16-05-18 05:17)
+ ✔ add a optional argument for decorator descritive, like @animated('message') @done (16-05-18 17:44)
+ ☐ use contextlib manager for decorator @animated, like @wait_for_connection
  ☐ add basics decorators: cache, time_count, debug e etc
  ☐ add tests
  ☐ allow coverage report
