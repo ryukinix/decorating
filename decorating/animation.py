@@ -87,27 +87,35 @@ def _spinner(control):
 
 
 # deal with it
-def animated(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        global last_thread
-        if not wrapper.running:
-            sig.message = func.__name__
-            spinner_thread = threading.Thread(target=_spinner, args=(sig,))
-            spinner_thread.start()
-            last_thread = spinner_thread
-            wrapper.running = True
-        result = func(*args, **kwargs)
-        if wrapper.running:
-            sig.done = True
-            spinner_thread.join()
-            wrapper.running = False
-            sig.done = False
-
-        return result
-
-    wrapper.running = False
-
-    return wrapper
+def animated(func_or_message):
+    def _animated(func)
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            global last_thread
+            if not wrapper.running:
+                sig.message = name
+                spinner_thread = threading.Thread(target=_spinner, args=(sig,))
+                spinner_thread.start()
+                last_thread = spinner_thread
+                wrapper.running = True
+            result = func(*args, **kwargs)
+            if wrapper.running:
+                sig.done = True
+                spinner_thread.join()
+                wrapper.running = False
+                sig.done = False
+    
+            return result
+    
+        wrapper.running = False
+    
+        return wrapper
+        
+    if callable(func_or_message):  # function
+        name = func_or_message.__name__
+        return _animated(func_or_message)
+    else:
+        name = func_or_message
+        return _animated
 
 # END OF THE LOL ZONE
