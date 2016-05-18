@@ -35,7 +35,7 @@ with open('requirements-dev.txt') as f:
 
 
 setup(
-    name='decorating',
+    name=decorating.__name__,
     version=decorating.__version__,
     description="A useful collection of decorators (focused in animation)",
     long_description=long_description,
