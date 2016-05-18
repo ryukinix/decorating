@@ -2,16 +2,16 @@ PYTHON = python3
 INSTALL = install
 DEVELOP = develop
 TARGET = setup.py
-TEST_DEPLOY = sdist upload --repository pypitest
+TEST_DEPLOY = sdist bdist_wheel upload --repository pypitest
 TEST_REGISTER = register --repository pypitest
-DEPLOY = sdist upload --repository pypi
+DEPLOY = sdist bdist_wheel upload --repository pypi
 REGISTER = register --repository pypi
 BUILD_GARBAGE = build/ dist/
 EGG = *.egg-info 
 CHECK = check --metadata --restructuredtext --strict
 CLEAN = clean
 UNINSTALL = --uninstall
-BUILD = build
+BUILD = sdist bdist_wheel
 
 all: install
 	 clean
