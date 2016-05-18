@@ -1,8 +1,8 @@
 # feature request  vs tasks to do
  ✔ basic setup of the repository tree @done (16-05-17 17:55)
  ✔ submit on PyPI @done (16-05-17 18:37)
+ ✔ setup CI configuration with travis @done (16-05-17 22:07)
  ☐ add tests
- ☐ setup CI configuration with travis
  ☐ allow coverage report
  ☐ provide a wheel package
  ☐ write the docstrings for all functions
