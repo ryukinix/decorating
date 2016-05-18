@@ -64,5 +64,8 @@ setup(
         # 'console_scripts': [
         #     'decorating = decorating.cli:main'
         # ]
+    },
+    extras_require={
+        "Requires-Dist": ["pypandoc"]
     }
 )
