@@ -1,14 +1,23 @@
 # feature request  vs tasks to do
- ✔ basic setup of the repository tree @done (16-05-17 17:55)
- ✔ submit on PyPI @done (16-05-17 18:37)
- ✔ setup CI configuration with travis @done (16-05-17 22:07)
+ ✔ basic setup of the repository tree @done (16-05-17 17:55) v0.1-alpha
+ ✔ first submit on PyPI @done (16-05-17 18:37) v0.1-alpha
+ ✔ write a properly readme.md with gifs showing the basic usage @done (16-05-19 12:42) v0.1-alpha
+ ✔ setup CI configuration with travis @done (16-05-17 22:07) v0.1-alpha
  ✔ add a animated decorator for slow functions @done (16-05-18 05:17)
- ✔ add a optional argument for decorator descritive, like @animated('message') @done (16-05-18 17:44)
- ☐ add a linting checker to .travis.yml
- ☐ use contextlib manager for decorator @animated, like @wait_for_connection
- ☐ add basics decorators: cache, time_count, debug e etc
- ☐ add tests
- ☐ allow coverage report
- ☐ provide a wheel package
+ ✔ add a optional argument for decorator descritive, like @animated('message') @done (16-05-18 17:44) v0.1.1-alpha
+ ✔ support context manager for decorator @animated @done (16-05-19 12:30) v0.1.2-beta
+ ✔ add basics decorators: cache, time_count, debug e etc @done (16-05-19 12:30) v0.1.2-beta
+ ✔ @animted: handle signal when user send ctrl+c, stop thread and animation @done (16-05-19 12:33) v0.1.2-beta
+ ✔ provide a wheel package @done (16-05-19 12:41) v0.1.2-beta
+ ☐ support nested context managers
+ ☐ support context manager print something without breaking the animation
+ ☐ add a linting checker to .travis.yml (using flake8)
+ ☐ allow coverage report on travis and badge on readme.md
  ☐ write the docstrings for all functions
- ☐ write a properly readme.md with gifs showing the basic usage
+ ☐ generate a read-the-docs page using sphinx
+ ☐ add tests
+   ☐ animated
+   ☐ cache
+   ☐ count_time
+   ☐ counter
+   ☐ debug
