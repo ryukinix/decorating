@@ -9,3 +9,7 @@
    ✔ for the complex animated decorator, use a class instead a simple function @done (16-05-19 12:40)
    ✔ refactoring the _spinner function for more clearness @done (16-05-19 12:47)
    ✔ added tests for the general.py, the basic decorators @done (16-05-19 13:46)
+ ✔ v0.2.1-beta @done (16-05-19 14:54)
+   ✔ use animated as class instead a function wrapper (equal to AnimatedDecorator) @done (16-05-19 14:53)
+   ✔ fixed tests for count_time decorator, use sleep to avoid time almost 0 @done (16-05-19 14:53)
+   ✔ remove requirements-dev because is useless and the build was breaking with this @done (16-05-19 14:53)
