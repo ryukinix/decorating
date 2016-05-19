@@ -3,11 +3,16 @@
 #
 #   Python Script
 #
-#   Copyleft © Manoel Vilela
+#   Copyright © Manoel Vilela
 #
 #
 
+import sys
+
 COLORED = True
+
+if not sys.stdout.isatty():
+    COLORED = False
 
 color_map = {
     'brown': '\033[{style};30m',
