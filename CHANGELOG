@@ -8,3 +8,4 @@
    ✔ handle sigint signal when user send ctrl+c (stop thread and animation) for animated @done (16-05-19 12:33)
    ✔ for the complex animated decorator, use a class instead a simple function @done (16-05-19 12:40)
    ✔ refactoring the _spinner function for more clearness @done (16-05-19 12:47)
+   ✔ added tests for the general.py, the basic decorators @done (16-05-19 13:46)

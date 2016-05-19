@@ -17,7 +17,7 @@
  ☐ generate a read-the-docs page using sphinx
  ☐ add tests
    ☐ animated
-   ☐ cache
-   ☐ count_time
-   ☐ counter
-   ☐ debug
+   ✔ cache @done (16-05-19 13:50)
+   ✔ count_time @done (16-05-19 13:50)
+   ✔ counter @done (16-05-19 13:50)
+   ✔ debug @done (16-05-19 13:50)
