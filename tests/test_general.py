@@ -58,9 +58,12 @@ class TestDebugDecorator(unittest.TestCase):
 
 class TestCountTimeDecorator(unittest.TestCase):
 
-    def test_which_decorator(self):
+    def test_count_time_decorator(self):
+        from time import sleep
+
         @count_time
         def test(x):
+            sleep(0.01)
             return "output"
 
         for x in range(10):
