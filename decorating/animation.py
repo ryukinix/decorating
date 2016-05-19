@@ -177,8 +177,7 @@ class AnimatedDecorator(object):
         return self.func.__name__
 
 
-def animated(arg='wooow'):
-    return AnimatedDecorator(arg)
+animated = AnimatedDecorator
 
 
 def killed():
