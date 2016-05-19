@@ -41,7 +41,7 @@ setup(
     long_description=long_description,
     classifiers=[
         "Environment :: Console",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Topic :: Utilities",
         "Operating System :: Unix",
         "Programming Language :: Python :: 3",

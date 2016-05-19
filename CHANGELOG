@@ -2,7 +2,7 @@
    ✔ add a animated decorator for slow functions @done (16-05-18 05:16)
  ✔ v0.1.1-alpha @done (16-05-19 12:38)
    ✔ add optional argument for decorator animated, more descriptive messages @done (16-05-18 17:40)
- ☐ v0.1.2-beta
+ ✔ v0.2-beta @done (16-05-19 13:49)
    ✔ support context manager for decorator @animated @done (16-05-19 12:30)
    ✔ add basics decorators: cache, count_time, debug, counter and @done (16-05-19 12:30)
    ✔ handle sigint signal when user send ctrl+c (stop thread and animation) for animated @done (16-05-19 12:33)
