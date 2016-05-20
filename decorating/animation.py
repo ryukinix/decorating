@@ -16,7 +16,6 @@ from math import sin
 from itertools import cycle
 from functools import wraps
 from decorating import color
-from decorating.general import debug
 
 DEBUGGING = False
 level = logging.DEBUG if DEBUGGING else logging.INFO
@@ -210,42 +209,4 @@ def killed():
 signal.signal(signal.SIGINT, lambda x, y: killed())
 
 
-def test():
-
-    @debug
-    @animated('with args')
-    def with_args(*args):
-        time.sleep(2)
-        return args
-
-    @debug
-    @animated()
-    def decorated_with_called_decorator(*args):
-        time.sleep(2)
-        return args
-
-    @debug
-    @animated
-    def without_args(*args):
-        time.sleep(2)
-        return args
-
-    with animated('level1'):
-        with animated('level2'):
-            with animated('level3'):
-                with_args('entering: level3')
-            with_args('entering: level2')
-        with_args('entering: level1')
-
-    with animated('level1'):
-        without_args('lol')
-
-    # with_args('arg1', 'arg2')
-    # decorated_with_called_decorator('arg1', 'arg2')
-    # without_args('arg')
-
-
 __all__ = ['animated']
-
-if __name__ == '__main__':
-    test()
