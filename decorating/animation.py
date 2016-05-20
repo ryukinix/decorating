@@ -162,7 +162,7 @@ class AnimatedDecorator(object):
         else:
             logger.debug('reseting and start again')
             logger.debug('last_message: ' + self.last_message)
-            logger.debug('thread: ', self.message)
+            logger.debug('thread: ' + self.message)
             self.reset_message(self.last_message)
             self.start_animation(self.last_message)
 
