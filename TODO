@@ -18,6 +18,7 @@
    ✔ count_time @done (16-05-19 13:50)
    ✔ counter @done (16-05-19 13:50)
    ✔ debug @done (16-05-19 13:50)
+ ☐ animated: create params for padding function & the spinnners (left and right)
  ☐ support context manager print something without breaking the animation
  ☐ add a linting checker to .travis.yml (using flake8)
  ☐ write the docstrings for all functions
