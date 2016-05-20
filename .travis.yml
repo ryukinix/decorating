@@ -13,7 +13,7 @@ before_install:
   - pip install nose
 
 install:
-  - sudo python setup.py install
+  - python setup.py install
 
 script: nosetests
 
