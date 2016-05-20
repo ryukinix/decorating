@@ -10,12 +10,12 @@ sudo: true
 
 before_install:
   - sudo pip install coverage --user
-  - sudo pip install nose2
+  - sudo pip install nose
 
 install:
   - sudo python setup.py install
 
-script: nose2
+script: nosetests
 
 after_sucess:
  - coverage run tests
