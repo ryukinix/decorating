@@ -9,10 +9,17 @@ Decorating: A Meta Repo To Decorators
 [![PyPI status](https://img.shields.io/pypi/status/decorating.svg)](https://pypi.python.org/pypi/decorating/)
 [![HitCount](https://hitt.herokuapp.com/ryukinix/decorating.svg)](https://github.com/ryukinix/decorating)
 
+# Usage
 
-Collection of decorators, a properly README will be write in soon. For now only have that functionality:
+Collection of decorators, a properly README will be write in soon. For now only we have few functionalities, the main usage is the `@animated` decorator.
 
+## Animated
+
+Using as decorator
 ![animation](https://i.imgur.com/hjkNvEE.gif)
+
+Using as contextmanager
+![contextmanager](https://i.imgur.com/EeVnDyy.gif)
 
 ## Installation
 
