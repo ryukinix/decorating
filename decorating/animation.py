@@ -157,7 +157,7 @@ class AnimatedDecorator(object):
         logger.debug('exiting from context: ' + self.message)
         logger.debug('message active: ' + self.last_message)
         # if the context manager doesn't running yet
-        if not self.last_message and self.controller.running:
+        if not self.last_message or self.controller.running:
             logger.debug('stopping')
             self.stop_animation(self.last_message)
         else:
@@ -233,12 +233,12 @@ def test():
     with animated('level1'):
         with animated('level2'):
             with animated('level3'):
-                logger.debug('entering: level3')
-                time.sleep(1)
-            logger.debug('entering: level2')
-            time.sleep(1)
-        logger.debug('entering: level1')
-        time.sleep(3)
+                with_args('entering: level3')
+            with_args('entering: level2')
+        with_args('entering: level1')
+
+    with animated('level1'):
+        without_args('lol')
 
     # with_args('arg1', 'arg2')
     # decorated_with_called_decorator('arg1', 'arg2')
