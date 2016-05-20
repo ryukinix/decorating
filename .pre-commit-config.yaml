@@ -8,3 +8,16 @@
     - id: flake8
     # - id: name-tests-test
     - id: requirements-txt-fixer
+
+- repo: local
+  hooks:
+  - id: pylint
+    name: pylint
+    entry: pylint
+    language: system
+    files: \.py$
+  - id: nosetests
+    name: nosetests
+    entry: nose2
+    language: system
+    files: \.py$
