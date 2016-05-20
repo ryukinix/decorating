@@ -10,14 +10,15 @@
  ✔ @animted: handle signal when user send ctrl+c, stop thread and animation @done (16-05-19 12:33) v0.1.2-beta
  ✔ provide a wheel package @done (16-05-19 12:41) v0.1.2-beta
  ✔ support nested context managers @done (16-05-20 03:30)
- ☐ support context manager print something without breaking the animation
- ☐ add a linting checker to .travis.yml (using flake8)
- ☐ allow coverage report on travis and badge on readme.md
- ☐ write the docstrings for all functions
- ☐ generate a read-the-docs page using sphinx
- ☐ add tests
-   ☐ animated
+ ✔ setup useful hooks to avoid linting problems using pre-commit (and other utilities) @done (16-05-20 06:55)
+ ✔ allow coverage report on travis and badge on readme.md @done (16-05-20 07:03)
+ ✔ add tests @done (16-05-20 07:03)
+   ✔ animated @done (16-05-20 07:03)
    ✔ cache @done (16-05-19 13:50)
    ✔ count_time @done (16-05-19 13:50)
    ✔ counter @done (16-05-19 13:50)
    ✔ debug @done (16-05-19 13:50)
+ ☐ support context manager print something without breaking the animation
+ ☐ add a linting checker to .travis.yml (using flake8)
+ ☐ write the docstrings for all functions
+ ☐ generate a read-the-docs page using sphinx
