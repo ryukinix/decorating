@@ -18,11 +18,15 @@ from functools import wraps
 from decorating import color
 
 DEBUGGING = False
-level = logging.DEBUG if DEBUGGING else logging.INFO
-format = ('%(levelname)s: function %(funcName)s: line %(lineno)s\n'
-          '    | %(message)s')
-logging.basicConfig(format=format, level=level)
+level = logging.DEBUG if DEBUGGING else logging.NOTSET
+if DEBUGGING:
+    format = ('%(levelname)s: function %(funcName)s: line %(lineno)s\n'
+              '    | %(message)s')
+
+    logging.basicConfig(format=format, level=logging.DEBUG)
+
 logger = logging.getLogger(__name__)
+logger.propagate = False
 
 
 class AnimationStream(object):
