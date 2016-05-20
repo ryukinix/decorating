@@ -9,7 +9,7 @@
  ✔ add basics decorators: cache, time_count, debug e etc @done (16-05-19 12:30) v0.1.2-beta
  ✔ @animted: handle signal when user send ctrl+c, stop thread and animation @done (16-05-19 12:33) v0.1.2-beta
  ✔ provide a wheel package @done (16-05-19 12:41) v0.1.2-beta
- ☐ support nested context managers
+ ✔ support nested context managers @done (16-05-20 03:30)
  ☐ support context manager print something without breaking the animation
  ☐ add a linting checker to .travis.yml (using flake8)
  ☐ allow coverage report on travis and badge on readme.md

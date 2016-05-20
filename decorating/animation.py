@@ -19,10 +19,11 @@ from decorating import color
 from decorating.general import debug
 
 DEBUGGING = False
-if DEBUGGING:
-    format = ('%(levelname)s: function %(funcName)s: line %(lineno)s\n'
-              '---->: %(message)s')
-    logging.basicConfig(format=format, level=logging.DEBUG)
+level = logging.DEBUG if DEBUGGING else logging.INFO
+format = ('%(levelname)s: function %(funcName)s: line %(lineno)s\n'
+          '    | %(message)s')
+logging.basicConfig(format=format, level=level)
+logger = logging.getLogger(__name__)
 
 
 class AnimationStream(object):
@@ -45,8 +46,8 @@ class AnimationStream(object):
 
 class SpinnerController(object):
     position = 0
+    message = ''
     done = False
-    message = 'loading'
     running = False
     last_thread = None
 
@@ -59,8 +60,8 @@ class SpinnerController(object):
 #   /  \    |   /|     |    / |
 # LOL  LOL  |   LLOL   |  LOLLOL
 
-braily = "⣾⣽⣻⢿⡿⣟⣯"
-pulse = '▁▂▃▄▅▆▇▆▅▄▃▁'
+BRAILY = "⣾⣽⣻⢿⡿⣟⣯"
+PULSE = '▁▂▃▄▅▆▇▆▅▄▃▁'
 
 
 def space_wave(x, b, char='█'):
@@ -68,12 +69,12 @@ def space_wave(x, b, char='█'):
 
 
 def _spinner(control):
-    slow_braily = ''.join(x * 5 for x in braily)
+    slow_braily = ''.join(x * 5 for x in BRAILY)
     if not sys.stdout.isatty():  # not send to pipe/redirection
         return
     stream_animation = AnimationStream(sys.stdout)
     template = '{padding} {start} {control.message} {end}'
-    for n, (start, end) in enumerate(zip(cycle(slow_braily), cycle(pulse))):
+    for n, (start, end) in enumerate(zip(cycle(slow_braily), cycle(PULSE))):
         padding = space_wave(n, control.position)
         message = '\r' + color.colorize(template.format_map(locals()), 'cyan')
         stream_animation.write(message)
@@ -103,23 +104,24 @@ class AnimatedDecorator(object):
     # to handle various decorated functions
     controller = SpinnerController()
 
-    def __init__(self, arg):
+    def __init__(self, arg=''):
         self.decorating = False
-        logging.debug('arg passed: {!r}'.format(arg))
+        logger.debug('arg passed: {!r}'.format(arg))
         if callable(arg):
             self.func = arg
             self.message = self.func.__name__
         else:
             self.func = None
             self.message = arg
+        self.last_message = ''
 
-    def calling(self):
-        return self.func(*self.args, **self.kwargs)(context_manager=self)()
-
-    def start_animation(self):
-        logging.debug('starting animation!')
+    def start_animation(self, message=''):
+        logger.debug('starting animation!')
+        entities = filter(bool, [self.controller.message, self.message])
+        self.last_message = self.controller.message
+        self.controller.message = message or ' - '.join(entities)
+        logger.debug('[starting] last_message: ' + self.last_message)
         if not self.controller.running:
-            self.controller.message = self.message
             self.spinner_thread = threading.Thread(target=_spinner,
                                                    args=(self.controller,))
             self.controller.last_thread = self.spinner_thread
@@ -128,21 +130,42 @@ class AnimatedDecorator(object):
             self.controller.running = True
 
     @staticmethod
-    def stop_animation():
-        if AnimatedDecorator.controller.running:
-            AnimatedDecorator.controller.done = True
-            AnimatedDecorator.controller.last_thread.join()
-            AnimatedDecorator.controller.done = False
-            AnimatedDecorator.controller.running = False
-            logging.debug('animation finished!')
+    def stop_animation(last_message=''):
+        controller = AnimatedDecorator.controller
+        if controller.running:
+            controller.done = True
+            controller.last_thread.join()
+            controller.done = False
+            controller.running = False
+            logger.debug('[stopping] last_message: ' + last_message)
+            logger.debug('animation finished!')
+
+        # some context managers don't running because others are running
+        # so, anyway, we need update the controller.message = last_message
+        # to works fine with nested context_managers
+        AnimatedDecorator.reset_message(last_message)
+
+    @staticmethod
+    def reset_message(last_message=''):
+        AnimatedDecorator.controller.message = last_message
 
     def __enter__(self):
-        logging.debug('entering in context')
+        logger.debug('entering in context: ' + self.message)
         self.start_animation()
 
     def __exit__(self, *args):
-        self.stop_animation()
-        logging.debug('exiting from context')
+        logger.debug('exiting from context: ' + self.message)
+        logger.debug('message active: ' + self.last_message)
+        # if the context manager doesn't running yet
+        if not self.last_message and self.controller.running:
+            logger.debug('stopping')
+            self.stop_animation(self.last_message)
+        else:
+            logger.debug('reseting and start again')
+            logger.debug('last_message: ', self.last_message)
+            logger.debug('thread: ', self.message)
+            self.reset_message(self.last_message)
+            self.start_animation(self.last_message)
 
     def __call__(self, *args, **kwargs):
         func = self.func or args[0]
@@ -151,13 +174,13 @@ class AnimatedDecorator(object):
         def wrapper(*args, **kargs):
             self.start_animation()
             result = func(*args, **kargs)
-            self.stop_animation()
+            self.stop_animation(self.last_message)
             return result
 
         # called when decorated with args, so in __call__
         # the first argument is a function
         if any(args) and callable(args[0]):
-            logging.debug('decorator called before decorating!')
+            logger.debug('decorator called before decorating!')
             return wrapper
 
         return wrapper(*args, **kwargs)
@@ -188,8 +211,6 @@ signal.signal(signal.SIGINT, lambda x, y: killed())
 
 
 def test():
-    with animated('contextmanager'):
-        time.sleep(2)
 
     @debug
     @animated('with args')
@@ -209,7 +230,17 @@ def test():
         time.sleep(2)
         return args
 
-    with_args('arg1', 'arg2')
+    with animated('level1'):
+        with animated('level2'):
+            with animated('level3'):
+                logger.debug('entering: level3')
+                time.sleep(1)
+            logger.debug('entering: level2')
+            time.sleep(1)
+        logger.debug('entering: level1')
+        time.sleep(3)
+
+    # with_args('arg1', 'arg2')
     # decorated_with_called_decorator('arg1', 'arg2')
     # without_args('arg')
 
