@@ -156,7 +156,7 @@ class AnimatedDecorator(object):
 
         # called when decorated with args, so in __call__
         # the first argument is a function
-        if callable(args[0]):
+        if any(args) and callable(args[0]):
             logging.debug('decorator called before decorating!')
             return wrapper
 

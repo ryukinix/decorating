@@ -12,7 +12,7 @@ Decorating: A Meta Repo To Decorators
 
 Collection of decorators, a properly README will be write in soon. For now only have that functionality:
 
-![animation](https://i.imgur.com/8mAXdhu.gif)
+![animation](https://i.imgur.com/hjkNvEE.gif)
 
 ## Installation
 
