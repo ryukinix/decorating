@@ -9,8 +9,8 @@ python:
 sudo: true
 
 before_install:
-  - sudo pip install coverage --user
-  - sudo pip install nose
+  - pip install coverage --user
+  - pip install nose --user
 
 install:
   - sudo python setup.py install
