@@ -6,5 +6,5 @@
     - id: check-added-large-files
     - id: check-merge-conflict
     - id: flake8
-    - id: name-tests-test
+    # - id: name-tests-test
     - id: requirements-txt-fixer
