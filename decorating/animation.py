@@ -105,14 +105,14 @@ def _spinner(control):
     template = '{padding} {start} {message} {end}'
     slow_braily = ''.join(x * 5 for x in BRAILY)
     for i, (start, end) in enumerate(zip(cycle(slow_braily), cycle(PULSE))):
-        padding = _space_wave(i, control['position'])
+        padding = _space_wave(i, control['last_position'])
         info = dict(padding=padding, start=start,
                     end=end, message=control['message'])
         message = '\r' + color.colorize(template.format_map(info), 'cyan')
         STREAM.write(message)
         STREAM.erase(message)
         if control['done']:
-            control['position'] = i
+            control['last_position'] = i
             break
     STREAM.erase(message)
 

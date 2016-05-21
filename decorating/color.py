@@ -53,11 +53,11 @@ def colorize(printable, color, style='normal'):
     """
     if not COLORED:  # disable color
         return printable
-    if color:
+    if color not in COLOR_MAP:
         raise RuntimeError('invalid color set, no {}'.format(color))
 
     return '{color}{printable}{reset}'.format_map({
-        'style': STYLE_MAP[style],
-        'color': COLOR_MAP[color].format(STYLE_MAP[style]),
+        'printable': printable,
+        'color': COLOR_MAP[color].format(style=STYLE_MAP[style]),
         'reset': COLOR_MAP['reset'],
     })
