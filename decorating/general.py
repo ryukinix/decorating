@@ -14,7 +14,6 @@
 # stdlib
 from functools import wraps
 from time import time
-from sys import stdout
 
 
 def debug(function):
@@ -36,7 +35,7 @@ def debug(function):
             args += ('='.join([str(x) for x in (key, value)]))
         if len(args) == 1:
             args = '({})'.format(args[0])
-        print('@{0}{1} -> {2}\n'.format(function.__name__, args, result))
+        print('@{0}{1} -> {2}'.format(function.__name__, args, result))
         _wrapper.last_output = [function.__name__, args, result]
         return result
     _wrapper.last_output = []
@@ -58,9 +57,9 @@ def counter(function):
     def _wrapper(*args, **kwargs):
         _wrapper.count += 1
         res = function(*args, **kwargs)
-        msg = "\r{} has been used: {}x".format(function.__name__,
-                                               _wrapper.count)
-        stdout.write(msg)
+        funcname = function.__name__
+        count = _wrapper.count
+        print("{} has been used: {}x".format(funcname, count))
         return res
     _wrapper.count = 0
     return _wrapper
@@ -109,8 +108,8 @@ def count_time(function):
         before = time()
         result = function(*args, **kwargs)
         diff = time() - before
-        print("{!r} func leave it {:.2f} ms to finish".format(
-            function.__name__, diff))
+        funcname = function.__name__
+        print("{!r} func leave it {:.2f} ms to finish".format(funcname, diff))
         _wrapper.time = diff
         return result
 
