@@ -1,23 +1,23 @@
-- repo: git://github.com/pre-commit/pre-commit-hooks
-  sha: v0.4.2
-  hooks:
-    - id: trailing-whitespace
-    - id: autopep8-wrapper
-    - id: check-added-large-files
-    - id: check-merge-conflict
-    - id: flake8
-    # - id: name-tests-test
-    - id: requirements-txt-fixer
-
-- repo: local
-  hooks:
-  - id: pylint
-    name: pylint
-    entry: pylint
-    language: system
-    files: \.py$
-  - id: nosetests
-    name: nosetests
-    entry: nose2
-    language: system
-    files: \.py$
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: adbb569fe9a64ad9bce3b53a77f1bc39ef31f682
+    hooks:
+    -   id: trailing-whitespace
+    -   id: autopep8-wrapper
+    -   id: check-added-large-files
+    -   id: check-merge-conflict
+    -   id: flake8
+    -   id: requirements-txt-fixer
+-   repo: local
+    hooks:
+    -   id: nosetests
+        name: nosetests
+        entry: bash -ec 'nose2'
+        language: system
+        files: \.py$
+    -   id: pylint
+        name: pylint
+        args:
+        - --output-format=colorized
+        entry: pylint
+        language: system
+        files: \.py$
