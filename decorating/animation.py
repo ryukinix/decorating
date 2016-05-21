@@ -98,19 +98,18 @@ def _space_wave(variable, bias, char='█'):
     return char * int(20 * abs(sin(0.05 * (variable + bias))))
 
 
-def _spinner(control):
+def _spinner(control, fpadding=_space_wave):
     if not sys.stdout.isatty():  # not send to pipe/redirection
         return
 
     template = '{padding} {start} {message} {end}'
     slow_braily = ''.join(x * 5 for x in BRAILY)
     for i, (start, end) in enumerate(zip(cycle(slow_braily), cycle(PULSE))):
-        padding = _space_wave(i, control['last_position'])
+        padding = fpadding(i, control['last_position'])
         info = dict(padding=padding, start=start,
                     end=end, message=control['message'])
         message = '\r' + color.colorize(template.format_map(info), 'cyan')
         STREAM.write(message)
-        STREAM.erase(message)
         if control['done']:
             control['last_position'] = i
             break
@@ -157,7 +156,8 @@ class AnimatedDecorator(object):
                       message='',
                       running=False)
 
-    def __init__(self, arg=''):
+    def __init__(self, arg='', fpadding=_space_wave):
+        self.fpadding = fpadding
         self.decorating = False
         self.last_message = ''
         if isfunction(arg):
@@ -178,7 +178,7 @@ class AnimatedDecorator(object):
         LOGGER.debug('[starting] last_message: ' + self.last_message)
         if not self.controller['running']:
             thread = threading.Thread(target=_spinner,
-                                      args=(self.controller,))
+                                      args=(self.controller, self.fpadding))
             self.controller['last_thread'] = thread
             self.controller['done'] = False
             self.controller['last_thread'].start()
