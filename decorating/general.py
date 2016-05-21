@@ -17,7 +17,7 @@ from time import time
 from sys import stdout
 
 
-def debug(fn):
+def debug(function):
     """
     Function: debug
     Summary: decorator to debug a function
@@ -25,93 +25,94 @@ def debug(fn):
               the decorator will allows to print the
               input and output of each execution
     Attributes:
-        @param (fn): function
+        @param (function): function
     Returns: wrapped function
     """
 
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
-        result = fn(*args, **kwargs)
+    @wraps(function)
+    def _wrapper(*args, **kwargs):
+        result = function(*args, **kwargs)
         for key, value in kwargs.items():
-            args += ('='.join(map(str, [key, value])),)
+            args += ('='.join([str(x) for x in (key, value)]))
         if len(args) == 1:
             args = '({})'.format(args[0])
-        stdout.write('@{0}{1} -> {2}\n'.format(fn.__name__, args, result))
-        wrapper.last_output = [fn.__name__, args, result]
+        print('@{0}{1} -> {2}\n'.format(function.__name__, args, result))
+        _wrapper.last_output = [function.__name__, args, result]
         return result
-    wrapper.last_output = []
-    return wrapper
+    _wrapper.last_output = []
+    return _wrapper
 
 
-def counter(func):
+def counter(function):
     """
     Function: counter
     Summary: Decorator to count the number of a function is executed each time
     Examples: You can use that to had a progress of heally heavy
               computation without progress feedback
     Attributes:
-        @param (func): function
+        @param (function): function
     Returns: wrapped function
     """
 
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        wrapper.count += 1
-        res = func(*args, **kwargs)
-        stdout.write("\r{0} has been used: {1}x".format(
-            func.__name__, wrapper.count
-        )
-        )
-        stdout.flush()
+    @wraps(function)
+    def _wrapper(*args, **kwargs):
+        _wrapper.count += 1
+        res = function(*args, **kwargs)
+        msg = "\r{} has been used: {}x".format(function.__name__,
+                                               _wrapper.count)
+        stdout.write(msg)
         return res
-    wrapper.count = 0
-    return wrapper
+    _wrapper.count = 0
+    return _wrapper
 
 
-def cache(fn):
+def cache(function):
     """
     Function: cache
     Summary: Decorator used to cache the input->output
     Examples: An fib memoized executes at O(1) time
               instead O(e^n)
     Attributes:
-        @param (fn): function
+        @param (function): function
     Returns: wrapped function
+
+    TODO: Give support to functions with kwargs
     """
 
-    cache = {}
+    memory = {}
     miss = object()
 
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
-        result = cache.get(args, miss)
+    @wraps(function)
+    def _wrapper(*args):
+        result = memory.get(args, miss)
         if result is miss:
-            wrapper.call += 1
-            result = fn(*args)
-            cache[args] = result
+            _wrapper.call += 1
+            result = function(*args)
+            memory[args] = result
         return result
-    wrapper.call = 0
-    return wrapper
+    _wrapper.call = 0
+    return _wrapper
 
 
-def count_time(fn):
+def count_time(function):
     """
     Function: count_time
     Summary: get the time to finish a function
              print at the end that time to stdout
     Examples: <NONE>
     Attributes:
-        @param (fn): function
+        @param (function): function
     Returns: wrapped function
     """
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
+    @wraps(function)
+    def _wrapper(*args, **kwargs):
         before = time()
-        result = fn(*args, **kwargs)
+        result = function(*args, **kwargs)
         diff = time() - before
-        print("{!r} func leave it {:f} ms to finish".format(fn.__name__, diff))
-        wrapper.time = diff
+        print("{!r} func leave it {:.2f} ms to finish".format(
+            function.__name__, diff))
+        _wrapper.time = diff
         return result
 
-    wrapper.time = 0
-    return wrapper
+    _wrapper.time = 0
+    return _wrapper
