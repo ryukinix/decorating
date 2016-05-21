@@ -7,6 +7,18 @@
 #
 #
 
+"""
+    DECORATING: A MODULE OF DECORATORS FROM HELL
+
+    You have that collection of decorators:
+
+    * animated: create animations on terminal until the result's returns
+    * cache: returns without reprocess if the give input was already processed
+    * counter: count the number of times whose the decorated function is called
+    * debug: when returns, print this pattern: @function(args) -> result
+    * count_time: count the time of the function decorated did need to return
+"""
+
 from decorating.animation import animated
 from decorating.general import cache, count_time, counter, debug
 
