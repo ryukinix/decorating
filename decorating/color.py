@@ -7,14 +7,22 @@
 #
 #
 
+
+"""
+    Module focused in termcolor operations
+
+    If the exection is not attatched in any tty,
+    so colored is disabled
+"""
+
+
 import sys
 
 COLORED = True
-
 if not sys.stdout.isatty():
     COLORED = False
 
-color_map = {
+COLOR_MAP = {
     'brown': '\033[{style};30m',
     'red': '\033[{style};31m',
     'green': '\033[{style};32m',
@@ -27,17 +35,29 @@ color_map = {
     'reset': '\033[00;00m'
 }
 
-style_map = {
+STYLE_MAP = {
     'normal': '00',
     'bold': '01',
     'underline': '04',
 }
 
 
-def colorize(printable, color_selected, style_selected='normal'):
+def colorize(printable, color, style='normal'):
+    """Colorize some message with ANSI colors specification
+
+    :param printable: interface whose has __str__ or __repr__ method
+    :param color: the colors defined in COLOR_MAP to colorize the text
+    :style: can be 'normal', 'bold' or 'underline'
+
+    :returns: the 'printable' colorized with style
+    """
     if not COLORED:  # disable color
         return printable
-    style = style_map[style_selected]
-    color = color_map[color_selected].format(style=style)
-    reset = color_map['reset']
-    return '{color}{printable}{reset}'.format_map(locals())
+    if color:
+        raise RuntimeError('invalid color set, no {}'.format(color))
+
+    return '{color}{printable}{reset}'.format_map({
+        'style': STYLE_MAP[style],
+        'color': COLOR_MAP[color].format(STYLE_MAP[style]),
+        'reset': COLOR_MAP['reset'],
+    })
