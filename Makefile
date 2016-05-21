@@ -7,11 +7,11 @@ TEST_REGISTER = register --repository pypitest
 DEPLOY = sdist bdist_wheel upload --repository pypi --sign
 REGISTER = register --repository pypi
 BUILD_GARBAGE = build/ dist/
-EGG = *.egg-info 
 CHECK = check --metadata --restructuredtext --strict
 CLEAN = clean
 UNINSTALL = --uninstall
 BUILD = sdist bdist_wheel
+ENVIROMENT = *.egg-info *.env
 
 all: install
 	 @make clean
@@ -22,7 +22,18 @@ check:
 	@echo "+===============+"
 	$(PYTHON) $(TARGET) $(CHECK)
 	@echo "ok!"
+
 clean:
+	@make clean-build
+	@make clean-enviroment
+
+clean-environment:
+	@echo "+===============+"
+	@echo "|   CLEAN ENV  |"
+	@echo "+===============+"
+	rm -rfv $(ENVIROMENT)
+
+clean-build:
 	@echo "+===============+"
 	@echo "|  CLEAN BUILD  |"
 	@echo "+===============+"
@@ -62,7 +73,6 @@ develop-uninstall:
 	@echo "+===============+"
 	$(PYTHON) $(TARGET) $(DEVELOP) $(UNINSTALL)
 	@make clean
-	rm -rfv $(EGG)
 
 test-deploy:
 	@make check
