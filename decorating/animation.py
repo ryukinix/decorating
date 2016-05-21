@@ -5,7 +5,28 @@
 #
 #   Copyright © Manoel Vilela
 #
-#
+
+"""
+
+    This module was be done to handle the beautiful animation using
+    the sin function (whose cause a pulse in the stdout).
+
+    Some examples of using is here:
+
+        @animated
+        def slow():
+            heavy_stuff()
+
+        As well with custom messages
+        @animated('WOOOOW')
+        def download_the_universe():
+            while True:
+                pass
+
+        with animated('loool'):
+            stuff_from_hell()
+
+"""
 
 import sys
 import time
@@ -15,6 +36,7 @@ import logging
 from math import sin
 from itertools import cycle
 from functools import wraps
+from inspect import isfunction
 from decorating import color
 
 DEBUGGING = False
@@ -30,16 +52,30 @@ LOGGER.propagate = False
 
 class AnimationStream(object):
 
-    def __init__(self, stream):
+    """A stream unbuffered whose write & erase at interval
+
+    After you write something, you can easily clean the buffer
+    and restart the points of the older message.
+    stream = AnimationStream(stream, delay=0.5)
+    self.write('message')
+
+    """
+
+    def __init__(self, stream, interval=0.05):
         self.stream = stream
+        self.interval = interval
 
-    def write(self, data):
-        self.stream.write(data)
+    def write(self, message):
+        """Send something for stdout and erased after delay"""
+        self.stream.write(message)
         self.stream.flush()
+        time.sleep(self.interval)
+        self.erase(message)
 
-    def erase(self, data):
-        self.stream.write('\r' + len(data) * ' ')
-        self.stream.write(2 * len(data) * "\010")
+    def erase(self, message):
+        """Erase something whose you write before: message"""
+        self.stream.write('\r' + len(message) * ' ')
+        self.stream.write(2 * len(message) * "\010")
         self.stream.flush()
 
     def __getattr__(self, attr):
@@ -55,30 +91,30 @@ class AnimationStream(object):
 
 BRAILY = "⣾⣽⣻⢿⡿⣟⣯"
 PULSE = '▁▂▃▄▅▆▇▆▅▄▃▁'
+STREAM = AnimationStream(sys.stdout, interval=0.05)
 
 
-def space_wave(variable, bias, char='█'):
+def _space_wave(variable, bias, char='█'):
     return char * int(20 * abs(sin(0.05 * (variable + bias))))
 
 
 def _spinner(control):
-    slow_braily = ''.join(x * 5 for x in BRAILY)
     if not sys.stdout.isatty():  # not send to pipe/redirection
         return
-    stream_animation = AnimationStream(sys.stdout)
+
     template = '{padding} {start} {message} {end}'
-    for n, (start, end) in enumerate(zip(cycle(slow_braily), cycle(PULSE))):
-        padding = space_wave(n, control['position'])
+    slow_braily = ''.join(x * 5 for x in BRAILY)
+    for i, (start, end) in enumerate(zip(cycle(slow_braily), cycle(PULSE))):
+        padding = _space_wave(i, control['position'])
         info = dict(padding=padding, start=start,
                     end=end, message=control['message'])
         message = '\r' + color.colorize(template.format_map(info), 'cyan')
-        stream_animation.write(message)
-        time.sleep(0.05)
-        stream_animation.erase(message)
+        STREAM.write(message)
+        STREAM.erase(message)
         if control['done']:
-            control['position'] = n
+            control['position'] = i
             break
-    stream_animation.erase(message)
+    STREAM.erase(message)
 
 # D
 #   E
@@ -95,41 +131,62 @@ def _spinner(control):
 # deal with it
 class AnimatedDecorator(object):
 
+    """The animated decorator from hell
+
+    You can use this these way:
+
+        @animated
+        def slow():
+            heavy_stuff()
+
+        As well with custom messages
+        @animated('WOOOOW')
+        def download_the_universe():
+            while True:
+                pass
+
+        with animated('loool'):
+            stuff_from_hell()
+    """
+
     last_thread = None
     # to handle various decorated functions
     controller = dict(last_position=0,
-                      message='',
+                      last_thread=None,
                       done=False,
-                      running=False,
-                      last_thread=None)
+                      message='',
+                      running=False)
 
     def __init__(self, arg=''):
         self.decorating = False
-        LOGGER.debug('arg passed: {!r}'.format(arg))
-        if callable(arg):
+        self.last_message = ''
+        if isfunction(arg):
             self.func = arg
-            self.message = self.func.__name__
+            self.message = self.func.__name__  # pylint: disable=e1101
         else:
             self.func = None
             self.message = arg
-        self.last_message = ''
+
+        LOGGER.debug(str(arg))
 
     def start_animation(self, message=''):
+        """Start a new animation instance"""
         LOGGER.debug('starting animation!')
-        entities = filter(bool, [self.controller['message'], self.message])
+        entities = [x for x in [self.controller['message'], self.message] if x]
         self.last_message = self.controller['message']
         self.controller['message'] = message or ' - '.join(entities)
         LOGGER.debug('[starting] last_message: ' + self.last_message)
         if not self.controller['running']:
-            self.spinner_thread = threading.Thread(target=_spinner,
-                                                   args=(self.controller,))
-            self.controller['last_thread'] = self.spinner_thread
+            thread = threading.Thread(target=_spinner,
+                                      args=(self.controller,))
+            self.controller['last_thread'] = thread
             self.controller['done'] = False
-            self.spinner_thread.start()
+            self.controller['last_thread'].start()
             self.controller['running'] = True
 
     @staticmethod
     def stop_animation(last_message=''):
+        """Stop the thread animation gracefully and reset_message"""
         controller = AnimatedDecorator.controller
         if controller['running']:
             controller['done'] = True
@@ -146,6 +203,7 @@ class AnimatedDecorator(object):
 
     @staticmethod
     def reset_message(last_message=''):
+        """reset the message of the public controller spinner"""
         AnimatedDecorator.controller['message'] = last_message
 
     def __enter__(self):
@@ -170,7 +228,7 @@ class AnimatedDecorator(object):
         func = self.func or args[0]
 
         @wraps(func)
-        def wrapper(*args, **kargs):
+        def _wrapper(*args, **kargs):
             self.start_animation()
             result = func(*args, **kargs)
             self.stop_animation(self.last_message)
@@ -180,9 +238,9 @@ class AnimatedDecorator(object):
         # the first argument is a function
         if any(args) and callable(args[0]):
             LOGGER.debug('decorator called before decorating!')
-            return wrapper
+            return _wrapper
 
-        return wrapper(*args, **kwargs)
+        return _wrapper(*args, **kwargs)
 
     @property
     def __name__(self):
@@ -196,17 +254,17 @@ class AnimatedDecorator(object):
         #
         # if we call this without this method, will throw an exception
         # about doesn't exists method __name__
-        return self.func.__name__ if self.func else ''
+        return self.func.__name__ if self.func else ''  # pylint: disable=e1101
 
 
-animated = AnimatedDecorator
+animated = AnimatedDecorator  # pylint: disable=C0103
 
 
-def killed():
+def _killed():
     AnimatedDecorator.stop_animation()
     raise KeyboardInterrupt
 
-signal.signal(signal.SIGINT, lambda x, y: killed())
+signal.signal(signal.SIGINT, lambda x, y: _killed())
 
 
 __all__ = ['animated']
