@@ -18,15 +18,14 @@ from functools import wraps
 from decorating import color
 
 DEBUGGING = False
-level = logging.DEBUG if DEBUGGING else logging.NOTSET
 if DEBUGGING:
-    format = ('%(levelname)s: function %(funcName)s: line %(lineno)s\n'
-              '    | %(message)s')
+    logging.basicConfig(format=('%(levelname)s: function '
+                                '%(funcName)s: line %(lineno)s\n'
+                                '    | %(message)s'),
+                        level=logging.DEBUG if DEBUGGING else logging.NOTSET)
 
-    logging.basicConfig(format=format, level=logging.DEBUG)
-
-logger = logging.getLogger(__name__)
-logger.propagate = False
+LOGGER = logging.getLogger(__name__)
+LOGGER.propagate = False
 
 
 class AnimationStream(object):
@@ -47,16 +46,7 @@ class AnimationStream(object):
         return getattr(self.stream, attr)
 
 
-class SpinnerController(object):
-    position = 0
-    message = ''
-    done = False
-    running = False
-    last_thread = None
-
-
 # THIS IS A LOL ZONE
-
 #    /\O    |    _O    |      O
 #     /\/   |   //|_   |     /_
 #    /\     |    |     |     |\
@@ -67,8 +57,8 @@ BRAILY = "⣾⣽⣻⢿⡿⣟⣯"
 PULSE = '▁▂▃▄▅▆▇▆▅▄▃▁'
 
 
-def space_wave(x, b, char='█'):
-    return char * int(20 * abs(sin(0.05 * (x + b))))
+def space_wave(variable, bias, char='█'):
+    return char * int(20 * abs(sin(0.05 * (variable + bias))))
 
 
 def _spinner(control):
@@ -76,15 +66,17 @@ def _spinner(control):
     if not sys.stdout.isatty():  # not send to pipe/redirection
         return
     stream_animation = AnimationStream(sys.stdout)
-    template = '{padding} {start} {control.message} {end}'
+    template = '{padding} {start} {message} {end}'
     for n, (start, end) in enumerate(zip(cycle(slow_braily), cycle(PULSE))):
-        padding = space_wave(n, control.position)
-        message = '\r' + color.colorize(template.format_map(locals()), 'cyan')
+        padding = space_wave(n, control['position'])
+        info = dict(padding=padding, start=start,
+                    end=end, message=control['message'])
+        message = '\r' + color.colorize(template.format_map(info), 'cyan')
         stream_animation.write(message)
         time.sleep(0.05)
         stream_animation.erase(message)
-        if control.done:
-            control.position = n
+        if control['done']:
+            control['position'] = n
             break
     stream_animation.erase(message)
 
@@ -105,11 +97,15 @@ class AnimatedDecorator(object):
 
     last_thread = None
     # to handle various decorated functions
-    controller = SpinnerController()
+    controller = dict(last_position=0,
+                      message='',
+                      done=False,
+                      running=False,
+                      last_thread=None)
 
     def __init__(self, arg=''):
         self.decorating = False
-        logger.debug('arg passed: {!r}'.format(arg))
+        LOGGER.debug('arg passed: {!r}'.format(arg))
         if callable(arg):
             self.func = arg
             self.message = self.func.__name__
@@ -119,54 +115,54 @@ class AnimatedDecorator(object):
         self.last_message = ''
 
     def start_animation(self, message=''):
-        logger.debug('starting animation!')
-        entities = filter(bool, [self.controller.message, self.message])
-        self.last_message = self.controller.message
-        self.controller.message = message or ' - '.join(entities)
-        logger.debug('[starting] last_message: ' + self.last_message)
-        if not self.controller.running:
+        LOGGER.debug('starting animation!')
+        entities = filter(bool, [self.controller['message'], self.message])
+        self.last_message = self.controller['message']
+        self.controller['message'] = message or ' - '.join(entities)
+        LOGGER.debug('[starting] last_message: ' + self.last_message)
+        if not self.controller['running']:
             self.spinner_thread = threading.Thread(target=_spinner,
                                                    args=(self.controller,))
-            self.controller.last_thread = self.spinner_thread
-            self.controller.done = False
+            self.controller['last_thread'] = self.spinner_thread
+            self.controller['done'] = False
             self.spinner_thread.start()
-            self.controller.running = True
+            self.controller['running'] = True
 
     @staticmethod
     def stop_animation(last_message=''):
         controller = AnimatedDecorator.controller
-        if controller.running:
-            controller.done = True
-            controller.last_thread.join()
-            controller.done = False
-            controller.running = False
-            logger.debug('[stopping] last_message: ' + last_message)
-            logger.debug('animation finished!')
+        if controller['running']:
+            controller['done'] = True
+            controller['last_thread'].join()
+            controller['done'] = False
+            controller['running'] = False
+            LOGGER.debug('[stopping] last_message: ' + last_message)
+            LOGGER.debug('animation finished!')
 
         # some context managers don't running because others are running
-        # so, anyway, we need update the controller.message = last_message
+        # so, anyway, we need update the controller['message'] = last_message
         # to works fine with nested context_managers
         AnimatedDecorator.reset_message(last_message)
 
     @staticmethod
     def reset_message(last_message=''):
-        AnimatedDecorator.controller.message = last_message
+        AnimatedDecorator.controller['message'] = last_message
 
     def __enter__(self):
-        logger.debug('entering in context: ' + self.message)
+        LOGGER.debug('entering in context: ' + self.message)
         self.start_animation()
 
     def __exit__(self, *args):
-        logger.debug('exiting from context: ' + self.message)
-        logger.debug('message active: ' + self.last_message)
+        LOGGER.debug('exiting from context: ' + self.message)
+        LOGGER.debug('message active: ' + self.last_message)
         # if the context manager doesn't running yet
-        if not self.last_message or self.controller.running:
-            logger.debug('stopping')
+        if not self.last_message or self.controller['running']:
+            LOGGER.debug('stopping')
             self.stop_animation(self.last_message)
         else:
-            logger.debug('reseting and start again')
-            logger.debug('last_message: ' + self.last_message)
-            logger.debug('thread: ' + self.message)
+            LOGGER.debug('reseting and start again')
+            LOGGER.debug('last_message: ' + self.last_message)
+            LOGGER.debug('thread: ' + self.message)
             self.reset_message(self.last_message)
             self.start_animation(self.last_message)
 
@@ -183,7 +179,7 @@ class AnimatedDecorator(object):
         # called when decorated with args, so in __call__
         # the first argument is a function
         if any(args) and callable(args[0]):
-            logger.debug('decorator called before decorating!')
+            LOGGER.debug('decorator called before decorating!')
             return wrapper
 
         return wrapper(*args, **kwargs)
@@ -200,7 +196,7 @@ class AnimatedDecorator(object):
         #
         # if we call this without this method, will throw an exception
         # about doesn't exists method __name__
-        return self.func.__name__
+        return self.func.__name__ if self.func else ''
 
 
 animated = AnimatedDecorator

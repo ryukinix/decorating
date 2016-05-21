@@ -18,6 +18,13 @@
         name: pylint
         args:
         - --output-format=colorized
+        - --disable=RP0001
+        - --disable=RP0002
+        - --disable=RP0003
+        - --disable=RP0101
+        - --disable=RP0401
+        - --disable=RP0701
+        - --disable=RP0801
         entry: pylint
         language: system
         files: \.py$
