@@ -50,7 +50,21 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.propagate = False
 
 
-class AnimationStream(object):
+class _UnbufferedStream(object):
+
+    def __init__(self, stream):
+        self.stream = stream
+
+    def write(self, message, flush=True):
+        self.stream.write(message)
+        if flush:
+            self.stream.flush()
+
+    def __getattr__(self, attr):
+        return getattr(self.stream, attr)
+
+
+class AnimationStream(_UnbufferedStream):
 
     """A stream unbuffered whose write & erase at interval
 
@@ -61,25 +75,57 @@ class AnimationStream(object):
 
     """
 
+    last_message = ''
+
     def __init__(self, stream, interval=0.05):
-        self.stream = stream
+        super(AnimationStream, self).__init__(stream)
         self.interval = interval
 
-    def write(self, message):
+    def write(self, message, autoerase=True):
         """Send something for stdout and erased after delay"""
-        self.stream.write(message)
-        self.stream.flush()
-        time.sleep(self.interval)
-        self.erase(message)
+        super().write(message)
+        self.last_message = message
+        if autoerase:
+            time.sleep(self.interval)
+            self.erase(message)
 
-    def erase(self, message):
+    def erase(self, message=None):
         """Erase something whose you write before: message"""
-        self.stream.write('\r' + len(message) * ' ')
-        self.stream.write(2 * len(message) * "\010")
-        self.stream.flush()
+        if not message:
+            message = self.last_message
+        super().write('\r' + len(message) * ' ', flush=False)
+        super().write(2 * len(message) * "\010", flush=True)
 
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
+
+
+class CleanStream(_UnbufferedStream):
+    """A stream wrapper to prepend '\n' in each write
+
+    This is used to not break the animations when he is activated
+
+    So in the start_animation we do:
+        sys.stdout = CleanStream(sys.stdout)
+
+    In the stop_animation we do:
+        sys.stdout = sys.__stdout__
+
+    """
+
+    lock = threading.Lock()
+
+    def write(self, message):
+        """Write something on the default stream with a prefixed message"""
+        # this need be threadsafe because the concurrent spinning running on
+        # the stderr
+        with self.lock:
+            STREAM.erase()
+            super().write(message + '\n')
+            # for some reason I need to put a '\n' here to correct
+            # print of the message, if don't put this, the print internal
+            # during the animation is not printed.
+            # however, this create a other problem: excess of newlines
 
 
 # THIS IS A LOL ZONE
@@ -183,6 +229,7 @@ class AnimatedDecorator(object):
             self.controller['done'] = False
             self.controller['last_thread'].start()
             self.controller['running'] = True
+            sys.stdout = CleanStream(sys.stdout)
 
     @staticmethod
     def stop_animation(last_message=''):
@@ -195,6 +242,7 @@ class AnimatedDecorator(object):
             controller['running'] = False
             LOGGER.debug('[stopping] last_message: ' + last_message)
             LOGGER.debug('animation finished!')
+            sys.stdout = sys.__stdout__
 
         # some context managers don't running because others are running
         # so, anyway, we need update the controller['message'] = last_message

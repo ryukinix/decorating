@@ -18,8 +18,15 @@
    ✔ count_time @done (16-05-19 13:50)
    ✔ counter @done (16-05-19 13:50)
    ✔ debug @done (16-05-19 13:50)
+ ✔ write the docstrings for all functions: @done (16-05-21 08:23)
+   ✔ animated & AnimatedDecorator @done (16-05-21 08:23)
+   ✔ AnimationStream @done (16-05-21 08:23)
+   ✔ cache @done (16-05-21 08:23)
+   ✔ count_time @done (16-05-21 08:23)
+   ✔ counter @done (16-05-21 08:23)
+   ✔ debug @done (16-05-21 08:23)
+ ✔ add a linting checker to .travis.yml (using flake8) (use pre-commit hooks instead that) @done (16-05-21 08:23)
+ ✔ support @animate print something without breaking the animation @done (16-05-21 19:21)
+ ☐ fix problem with the double-newlines added with print() in inside of @animated
  ☐ animated: create params for padding function & the spinnners (left and right)
- ☐ support context manager print something without breaking the animation
- ☐ add a linting checker to .travis.yml (using flake8)
- ☐ write the docstrings for all functions
  ☐ generate a read-the-docs page using sphinx

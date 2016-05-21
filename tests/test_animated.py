@@ -20,7 +20,9 @@ class TestAnimatedDecorator(unittest.TestCase):
         @debug
         @animated('with args')
         def with_args(*args):
-            time.sleep(0.5)
+            for x in range(10):
+                print(x)
+                time.sleep(0.5)
             return args
 
         self.assertEqual(with_args(*self.args), self.args,
@@ -68,12 +70,12 @@ class TestAnimatedDecorator(unittest.TestCase):
         with animated('level1'):
             with animated('level2'):
                 with animated('level3'):
-                    x = with_args(*self.args)
-                y = with_args(*self.args)
-            z = with_args(*self.args)
+                    level1 = with_args(*self.args)
+                level2 = with_args(*self.args)
+            level3 = with_args(*self.args)
 
-        for i in (x, y, z):
-            self.assertEqual(x, self.args, 'need returns the same I/O')
+        for level in (level1, level2, level3):
+            self.assertEqual(level, self.args, 'need returns the same I/O')
 
 
 if __name__ == '__main__':
