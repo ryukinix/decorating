@@ -15,10 +15,10 @@ Collection of decorators, a properly README will be write in soon. For now only 
 
 ## Animated
 
-Using as decorator and mixed with contextmanagers
+*Using as decorator and mixed with contextmanagers*
 ![animation](https://i.imgur.com/hjkNvEE.gif)
-
-Using with nested contextmanagers
+----
+*Using with nested contextmanagers*
 ![contextmanager](https://i.imgur.com/EeVnDyy.gif)
 
 ## Installation
