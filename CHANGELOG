@@ -29,3 +29,8 @@
     ✔ added a base class for Decorator, useful for new decorators @done (16-05-22 08:13)
     ✔ split debugging decorators (debug, counter, count_time) on debugging.py @done (16-05-22 08:13)
     ✔ fix the problem of double-lines! beauty use of @animated decorator without pain of internal prints @done (16-05-22 08:13)
+    ✔ added the decorator base class @done (16-05-24 03:55)
+    ✔ added the @writing decorator on animation.py @done (16-05-24 03:56)
+    ✔ added new tests from  hell: color, decorator and review of debugging. @done (16-05-24 03:56)
+    ✔ added .coveragerc in the repostiory based on you own specification. @done (16-05-24 03:57)
+   
