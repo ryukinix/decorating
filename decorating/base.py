@@ -15,11 +15,10 @@
 
     * Stream: Abstract Class for implementation of a Stream
 
-    * Decorator: A base class for creating new decorators
+    * Decorator: Abstract Class for creating new decorators
 
 """
 
-from functools import wraps
 from abc import abstractmethod, ABCMeta
 
 
@@ -42,50 +41,34 @@ class Stream(metaclass=ABCMeta):
         pass
 
 
-class Decorator(object):
+class DecoratorManager(metaclass=ABCMeta):
 
-    """Decorator base class to keep easy creating more decorators
+    """Decorator-Context-Manager base class to keep easy creating more decorators
 
     argument: can be empty or a callable object (function or class)
     """
 
-    def __init__(self, argument=None):
-        if callable(argument):
-            self.decorated = argument
-            self.argument = self.decorated.__name__
-        else:
-            self.decorated = None
-            self.argument = argument
+    @abstractmethod
+    def __call__(self, function):
+        """Base class to handle all the implementation of decorators"""
+        pass
 
-    def __call__(self, *args, **kwargs):
-        decorated = self.decorated or args[0]
+    @abstractmethod
+    def start(self):
+        """You active here your pre-fucking crazy feature"""
+        pass
 
-        @wraps(decorated)
-        def _wrapper(*args, **kargs):
-            if hasattr(self, 'start') and callable(self.start):
-                getattr(self, 'start')()
-            result = decorated(*args, **kargs)
-            if hasattr(self, 'stop') and callable(self.stop):
-                getattr(self, 'stop')()
-            return result
+    @abstractmethod
+    def stop(self):
+        """You can deactivate any behavior re-writing your method here"""
+        pass
 
-        # called when decorated with args, so in __call__
-        # the first argument is a function
-        if any(args) and callable(args[0]):
-            return _wrapper
+    @abstractmethod
+    def __enter__(self):
+        """Activated when enter in a context-manager (with keyword)"""
+        self.start()
 
-        return _wrapper(*args, **kwargs)
-
-    @property
-    def __name__(self):
-        # well, for some reason, a underlying bug
-        # occurs when a decorator is called without args
-        # example:
-        #          @debug
-        #          @animated
-        #          def slow():
-        #             sleep(1)
-        #
-        # if we call this without this method, will throw an exception
-        # about doesn't exists method __name__
-        return self.decorated.__name__ if self.decorated else ''
+    @abstractmethod
+    def __exit__(self, *args):
+        """Triggered when exit from a block of context-manager"""
+        self.stop()
