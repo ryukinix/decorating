@@ -73,7 +73,7 @@ class TestWiredDecorator(unittest.TestCase):
             def _knights():
                 with writing(0.3):
                     print('suiciding...')
-        
+
             _knights()
 
     def test_deco_layer2(self):

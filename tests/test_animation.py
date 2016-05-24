@@ -14,8 +14,8 @@
 
     [x] - AnimatedDecorator @ animated
     [x] - WritingDecorator @ writing
-    [ ] - _spacewave
-    [ ] - _spinner
+    [x] - _spacewave (running based on the class above)
+    [x] - _spinner (running based on the class above)
 
 """
 
@@ -84,9 +84,9 @@ class TestAnimatedDecorator(unittest.TestCase):
             time.sleep(1)
             return args
 
-        with animated('level1'):
-            with animated('level2'):
-                with animated('level3'):
+        with animated('layer-01'):
+            with animated('layer-02'):
+                with animated('level-03'):
                     level1 = _with_args(*self.args)
                 level2 = _with_args(*self.args)
 

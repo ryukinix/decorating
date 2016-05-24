@@ -18,9 +18,14 @@ class TestDebugDecorator(unittest.TestCase):
         def add(x, y):
             return x + y
 
+        @debug
+        def lol(x):
+            return '?'
+
         table_tests = {
-            (add, (1, 2)): ["add", (1, 2), 3],
-            (add, (1, 3)): ["add", (1, 3), 4],
+            (add, (1, 2)): ["add", "(1, 2)", 3],
+            (add, (1, 3)): ["add", "(1, 3)", 4],
+            (lol, (1,)): ["lol", "(1)", '?']
         }
 
         for test, expected in table_tests.items():
