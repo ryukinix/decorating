@@ -20,13 +20,12 @@
    ✔ correct setup of CI with coverage using codecov (96% now!) @done (16-05-20 15:11)
    ✔ fix problem with logging in animated.py to not progagate the logging when is desactivated (affects ryukinix/mal) @done (16-05-20 15:11)
    ✔ in nested @animated executions, correct handle animation context @done (16-05-20 15:15)
- 
- ☐ v0.4
-    ☐ general refactoring of lib on a better idiomatic way
-    ☐ added more asciiarts on asciiart.py
-    ☐ added the awesome @writing decorator
-    ☐ wrote the docstrings for all functions and modules (in a simple way, BTW)
-    ☐ added stream.py as colection of streams
-    ☐ added a base class for Decorator, useful for new decorators
-    ☐ split debugging decorators (debug, counter, count_time) on debugging.py
-    ☐ fix the problem of double-lines! beauty use of @animated decorator without pain of internal prints
+ ✔ v0.4 @done (16-05-22 08:13)
+    ✔ general refactoring of lib on a better idiomatic way @done (16-05-22 08:13)
+    ✔ added more asciiarts on asciiart.py @done (16-05-22 08:13)
+    ✔ added the awesome @writing decorator @done (16-05-22 08:13)
+    ✔ wrote the docstrings for all functions and modules (in a simple way, BTW) @done (16-05-22 08:13)
+    ✔ added stream.py as colection of streams @done (16-05-22 08:13)
+    ✔ added a base class for Decorator, useful for new decorators @done (16-05-22 08:13)
+    ✔ split debugging decorators (debug, counter, count_time) on debugging.py @done (16-05-22 08:13)
+    ✔ fix the problem of double-lines! beauty use of @animated decorator without pain of internal prints @done (16-05-22 08:13)
