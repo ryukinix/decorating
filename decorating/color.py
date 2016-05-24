@@ -20,7 +20,7 @@ import sys
 
 COLORED = True
 if not sys.stdout.isatty():
-    COLORED = False
+    COLORED = False  # pragma: no cover
 
 COLOR_MAP = {
     'brown': '\033[{style};30m',
