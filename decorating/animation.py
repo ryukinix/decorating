@@ -5,6 +5,9 @@
 #
 #   Copyright © Manoel Vilela
 #
+# pylint: disable=no-member
+# pylint: disable=C0103
+# pylint: disable=too-few-public-methods
 
 """
 
@@ -26,106 +29,25 @@
         with animated('loool'):
             stuff_from_hell()
 
+        @writing
+        def printer():
+            lot_of_messages()
+
+        with writing(delay=0.5):
+            print("L  O  L => IS NOT THE STUPID GAME LOL, LOL.")
+
+
 """
 
-import sys
-import time
-import threading
 import signal
-import logging
+import sys
+import threading
 from math import sin
 from itertools import cycle
-from functools import wraps
-from inspect import isfunction
+from decorating import decorator
 from decorating import color
-
-DEBUGGING = False
-if DEBUGGING:
-    logging.basicConfig(format=('%(levelname)s: function '
-                                '%(funcName)s: line %(lineno)s\n'
-                                '    | %(message)s'),
-                        level=logging.DEBUG if DEBUGGING else logging.NOTSET)
-
-LOGGER = logging.getLogger(__name__)
-LOGGER.propagate = False
-
-
-class _UnbufferedStream(object):
-
-    def __init__(self, stream):
-        self.stream = stream
-
-    def write(self, message, flush=True):
-        self.stream.write(message)
-        if flush:
-            self.stream.flush()
-
-    def __getattr__(self, attr):
-        return getattr(self.stream, attr)
-
-
-class AnimationStream(_UnbufferedStream):
-
-    """A stream unbuffered whose write & erase at interval
-
-    After you write something, you can easily clean the buffer
-    and restart the points of the older message.
-    stream = AnimationStream(stream, delay=0.5)
-    self.write('message')
-
-    """
-
-    last_message = ''
-
-    def __init__(self, stream, interval=0.05):
-        super(AnimationStream, self).__init__(stream)
-        self.interval = interval
-
-    def write(self, message, autoerase=True):
-        """Send something for stdout and erased after delay"""
-        super().write(message)
-        self.last_message = message
-        if autoerase:
-            time.sleep(self.interval)
-            self.erase(message)
-
-    def erase(self, message=None):
-        """Erase something whose you write before: message"""
-        if not message:
-            message = self.last_message
-        super().write('\r' + len(message) * ' ', flush=False)
-        super().write(2 * len(message) * "\010", flush=True)
-
-    def __getattr__(self, attr):
-        return getattr(self.stream, attr)
-
-
-class CleanStream(_UnbufferedStream):
-    """A stream wrapper to prepend '\n' in each write
-
-    This is used to not break the animations when he is activated
-
-    So in the start_animation we do:
-        sys.stdout = CleanStream(sys.stdout)
-
-    In the stop_animation we do:
-        sys.stdout = sys.__stdout__
-
-    """
-
-    lock = threading.Lock()
-
-    def write(self, message):
-        """Write something on the default stream with a prefixed message"""
-        # this need be threadsafe because the concurrent spinning running on
-        # the stderr
-        with self.lock:
-            STREAM.erase()
-            super().write(message + '\n')
-            # for some reason I need to put a '\n' here to correct
-            # print of the message, if don't put this, the print internal
-            # during the animation is not printed.
-            # however, this create a other problem: excess of newlines
+from decorating import stream
+from decorating import asciiart
 
 
 # THIS IS A LOL ZONE
@@ -135,31 +57,70 @@ class CleanStream(_UnbufferedStream):
 #   /  \    |   /|     |    / |
 # LOL  LOL  |   LLOL   |  LOLLOL
 
-BRAILY = "⣾⣽⣻⢿⡿⣟⣯"
-PULSE = '▁▂▃▄▅▆▇▆▅▄▃▁'
-STREAM = AnimationStream(sys.stdout, interval=0.05)
+
+class SpinnerController(object):
+    """Variables to controlling the spinner in parallel
+
+    Bias: the initial value of the padding function
+          is used here because after a animation stop
+          and other is started in sequence, the padding
+          for a semantic view need be in the same place.
+
+    running: variable signal-like to stop the thread
+          on the main loop doing the animation
+
+    message: the actual messaging on the spinner
+
+    stream: the stream to do the animation, needs
+            implement the AbstractClass stream.Stream
+
+    """
+
+    bias = 0
+    running = False
+    message = ''
+    stream = stream.Animation(sys.stderr)
+    fpadding = None
+
+
+class AnimationController(object):
+    """Used to controlling thread & running
+
+    context: the context level added +1 at each nested 'with'
+    running: the object running in the actual moment
+
+
+
+    """
+    context = 0
+    thread = None
+    messages = []
 
 
 def _space_wave(variable, bias, char='█'):
     return char * int(20 * abs(sin(0.05 * (variable + bias))))
 
 
-def _spinner(control, fpadding=_space_wave):
+def _spinner(control):
     if not sys.stdout.isatty():  # not send to pipe/redirection
         return
 
     template = '{padding} {start} {message} {end}'
-    slow_braily = ''.join(x * 5 for x in BRAILY)
-    for i, (start, end) in enumerate(zip(cycle(slow_braily), cycle(PULSE))):
-        padding = fpadding(i, control['last_position'])
-        info = dict(padding=padding, start=start,
-                    end=end, message=control['message'])
+    NBRAILY = ''.join(x * 5 for x in asciiart.BRAILY)
+    iterator = zip(cycle(NBRAILY), cycle(asciiart.VPULSE))
+    for i, (start, end) in enumerate(iterator):
+        padding = control.fpadding(i, control.bias)
+        info = dict(message=control.message,
+                    padding=padding,
+                    start=start,
+                    end=end)
         message = '\r' + color.colorize(template.format_map(info), 'cyan')
-        STREAM.write(message)
-        if control['done']:
-            control['last_position'] = i
+        if not control.stream.lock.locked():
+            control.stream.write(message)
+        if not control.running:
+            control.bias = i
             break
-    STREAM.erase(message)
+    control.stream.erase(message)
 
 # D
 #   E
@@ -174,7 +135,7 @@ def _spinner(control, fpadding=_space_wave):
 
 
 # deal with it
-class AnimatedDecorator(object):
+class AnimatedDecorator(decorator.Decorator):
 
     """The animated decorator from hell
 
@@ -194,125 +155,159 @@ class AnimatedDecorator(object):
             stuff_from_hell()
     """
 
-    last_thread = None
+    # if nothing is passed, so this is the message
+    default_message = 'loading'
     # to handle various decorated functions
-    controller = dict(last_position=0,
-                      last_thread=None,
-                      done=False,
-                      message='',
-                      running=False)
+    spinner = SpinnerController()
+    # to know if some instance of this class is running
+    # and proper handle that, like ctrl + c and exits
+    animation = AnimationController()
 
-    def __init__(self, arg='', fpadding=_space_wave):
-        self.fpadding = fpadding
-        self.decorating = False
-        self.last_message = ''
-        if isfunction(arg):
-            self.func = arg
-            self.message = self.func.__name__  # pylint: disable=e1101
-        else:
-            self.func = None
-            self.message = arg
+    def __init__(self, message=None, fpadding=_space_wave):
+        super(AnimatedDecorator, self).__init__()
+        self.message = message
+        self.spinner.fpadding = fpadding
 
-        LOGGER.debug(str(arg))
-
-    def start_animation(self, message=''):
+    def start(self, autopush=True):
         """Start a new animation instance"""
-        LOGGER.debug('starting animation!')
-        entities = [x for x in [self.controller['message'], self.message] if x]
-        self.last_message = self.controller['message']
-        self.controller['message'] = message or ' - '.join(entities)
-        LOGGER.debug('[starting] last_message: ' + self.last_message)
-        if not self.controller['running']:
-            thread = threading.Thread(target=_spinner,
-                                      args=(self.controller, self.fpadding))
-            self.controller['last_thread'] = thread
-            self.controller['done'] = False
-            self.controller['last_thread'].start()
-            self.controller['running'] = True
-            sys.stdout = CleanStream(sys.stdout)
+        if autopush:
+            self.push_message(self.message)
+        self.spinner.message = ' - '.join(self.animation.messages)
+        if not self.spinner.running:
+            self.animation.thread = threading.Thread(target=_spinner,
+                                                     args=(self.spinner,))
+            self.spinner.running = True
+            self.animation.thread.start()
+            sys.stdout = stream.Clean(sys.stdout, self.spinner.stream)
 
-    @staticmethod
-    def stop_animation(last_message=''):
+    @classmethod
+    def stop(cls):
         """Stop the thread animation gracefully and reset_message"""
-        controller = AnimatedDecorator.controller
-        if controller['running']:
-            controller['done'] = True
-            controller['last_thread'].join()
-            controller['done'] = False
-            controller['running'] = False
-            LOGGER.debug('[stopping] last_message: ' + last_message)
-            LOGGER.debug('animation finished!')
-            sys.stdout = sys.__stdout__
+        if cls.spinner.running:
+            cls.spinner.running = False
+            cls.animation.thread.join()
 
-        # some context managers don't running because others are running
-        # so, anyway, we need update the controller['message'] = last_message
-        # to works fine with nested context_managers
-        AnimatedDecorator.reset_message(last_message)
+        if any(cls.animation.messages):
+            cls.pop_message()
 
-    @staticmethod
-    def reset_message(last_message=''):
-        """reset the message of the public controller spinner"""
-        AnimatedDecorator.controller['message'] = last_message
+        sys.stdout = sys.__stdout__
 
     def __enter__(self):
-        LOGGER.debug('entering in context: ' + self.message)
-        self.start_animation()
+        self.animation.context += 1
+        self.start()
 
     def __exit__(self, *args):
-        LOGGER.debug('exiting from context: ' + self.message)
-        LOGGER.debug('message active: ' + self.last_message)
         # if the context manager doesn't running yet
-        if not self.last_message or self.controller['running']:
-            LOGGER.debug('stopping')
-            self.stop_animation(self.last_message)
+        self.animation.context -= 1
+        self.pop_message()
+        if self.animation.context == 0:
+            self.stop()
         else:
-            LOGGER.debug('reseting and start again')
-            LOGGER.debug('last_message: ' + self.last_message)
-            LOGGER.debug('thread: ' + self.message)
-            self.reset_message(self.last_message)
-            self.start_animation(self.last_message)
+            self.start(autopush=False)
 
-    def __call__(self, *args, **kwargs):
-        func = self.func or args[0]
+    @classmethod
+    def push_message(cls, message):
+        """Push a new message for the public messages stack"""
+        return cls.animation.messages.append(message)
 
-        @wraps(func)
-        def _wrapper(*args, **kargs):
-            self.start_animation()
-            result = func(*args, **kargs)
-            self.stop_animation(self.last_message)
-            return result
+    @classmethod
+    def pop_message(cls):
+        """Pop a new message (last) from the public message stack"""
+        return cls.animation.messages.pop(-1)
 
-        # called when decorated with args, so in __call__
-        # the first argument is a function
-        if any(args) and callable(args[0]):
-            LOGGER.debug('decorator called before decorating!')
-            return _wrapper
+    @classmethod
+    def __call__(cls, *args, **kwargs):
+        obj = super(AnimatedDecorator, cls).__call__(*args, **kwargs)
+        if any(cls.instances):
+            last_instance = cls.instances[-1]
+            last_instance.message = last_instance.auto_message(args)
+        elif isinstance(obj, cls):
+            obj.message = obj.auto_message(args)
+        return obj
 
-        return _wrapper(*args, **kwargs)
+    def auto_message(self, args):
+        """Try guess the message by the args passed
 
-    @property
-    def __name__(self):
-        # well, for some reason, a underlying bug
-        # occurs when a decorator is called without args
-        # example:
-        #          @debug
-        #          @animated
-        #          def slow():
-        #             sleep(1)
-        #
-        # if we call this without this method, will throw an exception
-        # about doesn't exists method __name__
-        return self.func.__name__ if self.func else ''  # pylint: disable=e1101
+        args: a set of args passed on the wrapper __call__ in
+              the definition above.
+
+        if the object already have some message (defined in __init__),
+        we don't change that. If the first arg is a function, so is decorated
+        without argument, use the func name as the message.
+
+        If not self.message anyway, use the default_message global,
+        another else  use the default self.message already
+
+        """
+        if any(args) and callable(args[0]) and not self.message:
+            return args[0].__name__
+        elif not self.message:
+            return self.default_message
+        else:
+            return self.message
 
 
-animated = AnimatedDecorator  # pylint: disable=C0103
+class WritingDecorator(decorator.Decorator):
+
+    """A writing class context to simulate a delayed stream
+
+    You can do something like that:
+
+    with writing(delay=0.3):
+        print('LOL!!! This is so awesome!')
+
+    Or, as expected for this lib, using as decorator!
+
+    @writing
+    def somebody_talking():
+        print("Oh man... I'm so sad. Why I even exists?")
+        print("I don't meeting anybody")
+        print("I don't want answer my phone")
+        print("I don't even to live")
+        print("But dying is so hassle.")
+        print("I'd wish just disappears.")
+
+    delay: the down speed of writing, more bigger, more slow.
+
+
+    """
+    
+    # to handle nested streams
+    streams = []
+    enabled = True
+
+    def __init__(self, delay=0.05):
+        super(WritingDecorator, self).__init__()
+        self.stream = stream.Writting(sys.stdout, delay=delay)
+        if not self.enabled:
+            self.stream = sys.__stdout__
+
+    def start(self):
+        """Activate the TypingStream on stdout"""
+        self.streams.append(sys.stdout)
+        sys.stdout = self.stream
+
+    @classmethod
+    def stop(cls):
+        """Change back the normal stdout after the end"""
+        if any(cls.streams):
+            sys.stdout = cls.streams.pop(-1)
+        else:
+            sys.stdout = sys.__stdout__
 
 
 def _killed():
-    AnimatedDecorator.stop_animation()
+    AnimatedDecorator.stop()
+    WritingDecorator.stop()
     raise KeyboardInterrupt
 
 signal.signal(signal.SIGINT, lambda x, y: _killed())
 
+animated = AnimatedDecorator('loading')
+writing = WritingDecorator()
 
-__all__ = ['animated']
+
+__all__ = [
+    'animated',
+    'writing'
+]

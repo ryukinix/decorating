@@ -19,10 +19,11 @@
     * count_time: count the time of the function decorated did need to return
 """
 
-from decorating.animation import animated
-from decorating.general import cache, count_time, counter, debug
+from decorating.animation import animated, writing
+from decorating.debugging import count_time, counter, debug
+from decorating.general import cache
 
-__version__ = '0.3'
+__version__ = '0.4'
 __author__ = 'Manoel Vilela'
 __email__ = 'manoel_vilela@engineer.com'
 __url__ = 'https://github.com/ryukinix/decorating'
@@ -33,5 +34,6 @@ __all__ = [
     'cache',
     'counter',
     'debug',
-    'count_time'
+    'count_time',
+    'writing'
 ]
