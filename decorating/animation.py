@@ -43,6 +43,7 @@ import signal
 import sys
 import threading
 from math import sin
+from functools import partial
 from itertools import cycle
 from decorating import decorator
 from decorating import color
@@ -97,25 +98,63 @@ class AnimationController(object):
     messages = []
 
 
-def _space_wave(variable, bias, char='█'):
-    return char * int(20 * abs(sin(0.05 * (variable + bias))))
+def space_wave(λ, char=asciiart.WAVE, amplitude=12, frequency=0.1):
+    """
+    Function: space_wave
+    Summary: This function is used to generate a wave-like padding
+             spacement based on the variable lambda
+    Examples: >>> print('\n'.join(space_wave(x) for x in range(100))
+              █
+              ███
+              ████
+              ██████
+              ███████
+              ████████
+              █████████
+              ██████████
+              ██████████
+              ██████████
+              ██████████
+              ██████████
+              ██████████
+              █████████
+              ████████
+              ███████
+              █████
+              ████
+              ██
+              █
+
+    Attributes:
+        @param (λ): your positive variable, can be a int or float
+        @param (char) default='█': the char to construct the space_wave
+        @param (amplitude) default=10: a float/int number to describe
+                                       how long is the space_wave max
+        @param (frequency) default=0.1: the speed of change
+    Returns: a unique string of a sequence of 'char'
+    """
+    wave = cycle(char)
+    return ''.join((next(wave) for x in range
+                    (int((amplitude + 1) * abs(sin(frequency * (λ)))))))
 
 
 def _spinner(control):
     if not sys.stdout.isatty():  # not send to pipe/redirection
         return
 
+    colorize_no_reset = partial(color.colorize, autoreset=False)
+
     template = '{padding} {start} {message} {end}'
     NBRAILY = ''.join(x * 5 for x in asciiart.BRAILY)
     iterator = zip(cycle(NBRAILY), cycle(asciiart.VPULSE))
     for i, (start, end) in enumerate(iterator):
-        padding = control.fpadding(i, control.bias)
-        info = dict(message=control.message,
-                    padding=padding,
-                    start=start,
-                    end=end)
-        message = '\r' + color.colorize(template.format_map(info), 'cyan')
-        if not control.stream.lock.locked():
+        padding = control.fpadding(i + control.bias)
+        info = dict(message=colorize_no_reset(control.message, 'red'),
+                    padding=colorize_no_reset(padding, 'blue'),
+                    start=colorize_no_reset(start, 'cyan'),
+                    end=color.colorize(end, 'cyan'))
+        message = '\r' + template.format_map(info)
+        with control.stream.lock:
             control.stream.write(message)
         if not control.running:
             control.bias = i
@@ -163,7 +202,7 @@ class AnimatedDecorator(decorator.Decorator):
     # and proper handle that, like ctrl + c and exits
     animation = AnimationController()
 
-    def __init__(self, message=None, fpadding=_space_wave):
+    def __init__(self, message=None, fpadding=space_wave):
         super(AnimatedDecorator, self).__init__()
         self.message = message
         self.spinner.fpadding = fpadding
@@ -271,7 +310,7 @@ class WritingDecorator(decorator.Decorator):
 
 
     """
-    
+
     # to handle nested streams
     streams = []
     enabled = True
@@ -299,6 +338,7 @@ class WritingDecorator(decorator.Decorator):
 def _killed():
     AnimatedDecorator.stop()
     WritingDecorator.stop()
+    AnimatedDecorator.spinner.stream.dump.close()
     raise KeyboardInterrupt
 
 signal.signal(signal.SIGINT, lambda x, y: _killed())
