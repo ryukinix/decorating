@@ -21,7 +21,7 @@ from warnings import warn
 from decorating.base import DecoratorManager
 
 
-# A UNINTINED LOL-ZONE: SORRY FOR THIS
+# A UNINTENDED LOL-ZONE: SORRY FOR THIS
 # -----------+----------+-----------
 #     /\O    |    _O    |      O
 #      /\/   |   //|_   |     /_
@@ -29,7 +29,7 @@ from decorating.base import DecoratorManager
 #    /  \    |   /|     |    / |
 #  LOL  LOL  |   LLOL   |  LOLLOL
 # -----------+----------+-----------
-# BLACK MAGICK FULL FEATURED ENABLED
+# FULL FEATURED BLACK MAGICK ENABLED
 
 
 class Decorator(DecoratorManager):
