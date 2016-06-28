@@ -1,9 +1,11 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
-#   Python Script
+#    Copyright © Manoel Vilela 2016
 #
-#   Copyright © Manoel Vilela
+#    @project: Decorating
+#     @author: Manoel Vilela
+#      @email: manoel_vilela@engineer.com
 #
 # pylint: disable=no-member
 # pylint: disable=C0103
@@ -89,8 +91,6 @@ class AnimationController(object):
 
     context: the context level added +1 at each nested 'with'
     running: the object running in the actual moment
-
-
 
     """
     context = 0
