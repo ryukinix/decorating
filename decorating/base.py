@@ -65,12 +65,10 @@ class DecoratorManager(metaclass=ABCMeta):
         """You can deactivate any behavior re-writing your method here"""
         pass
 
-    @abstractmethod
     def __enter__(self):
         """Activated when enter in a context-manager (with keyword)"""
         self.start()
 
-    @abstractmethod
     def __exit__(self, *args):
         """Triggered when exit from a block of context-manager"""
         self.stop()

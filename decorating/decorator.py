@@ -120,22 +120,6 @@ class Decorator(DecoratorManager):
 
         return instance
 
-    def start(self):
-        """You active here your pre-fucking crazy feature"""
-        pass
-
-    def stop(self):
-        """You can deactivate any behavior re-writing your method here"""
-        pass
-
-    def __enter__(self):
-        """Activated when enter in a context-manager (with keyword)"""
-        self.start()
-
-    def __exit__(self, *args):
-        """Triggered when exit from a block of context-manager"""
-        self.stop()
-
     def _over_wrapper(self, function):
         @wraps(function)
         def _wrapper(*args, **kargs):
