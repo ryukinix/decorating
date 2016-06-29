@@ -1,9 +1,11 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
-#   Python Script
+#    Copyright © Manoel Vilela 2016
 #
-#   Copyright © Manoel Vilela
+#    @project: Decorating
+#     @author: Manoel Vilela
+#      @email: manoel_vilela@engineer.com
 #
 # pylint: disable=too-few-public-methods
 
@@ -20,6 +22,7 @@
 """
 
 import time
+import re
 from threading import Lock
 from decorating.base import Stream
 
@@ -69,6 +72,7 @@ class Animation(Unbuffered):
     """
 
     last_message = ''
+    ansi_escape = re.compile(r'\x1b[^m]*m')
 
     def __init__(self, stream, interval=0.05):
         super(Animation, self).__init__(stream)
@@ -86,10 +90,34 @@ class Animation(Unbuffered):
         """Erase something whose you write before: message"""
         if not message:
             message = self.last_message
-        super(Animation, self).write('\r' + len(message) * ' ',
-                                     flush=False)
-        super(Animation, self).write(2 * len(message) * "\010",
-                                     flush=True)
+        self.fill_with_spaces(message)
+        self.write_backspaces(message)
+
+    def fill_with_spaces(self, message):
+        """
+        Function: fill_with_spaces
+        Summary: fill the actual stream with spaces based on the last message
+                 without count the escape codes
+        Examples: >>> stream.fill_with_spaces('banana')
+        Attributes:
+            @param (message): a str-like object based on the last write
+        Returns: None
+        """
+        to_erase = self.ansi_escape.sub('', message)
+        block_to_erase = len(to_erase)
+        super(Animation, self).write('\r' + block_to_erase * ' ')
+
+    def write_backspaces(self, message):
+        """
+        Function: write_backspaces
+        Summary: send a set of backspaces to the default stream
+                 to help 'erase' the last message
+        Examples: stream.write_backspaces('banana')
+        Attributes:
+            @param (message): a str-like object based on the last write
+        Returns: None
+        """
+        super(Animation, self).write(len(message) * "\010")
 
     def __getattr__(self, attr):
         return getattr(self.stream, attr)

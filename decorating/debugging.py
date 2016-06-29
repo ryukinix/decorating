@@ -1,11 +1,12 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
-#   Python Script
+#    Copyright © Manoel Vilela 2016
 #
-#   Copyright © Manoel Vilela
+#    @project: Decorating
+#     @author: Manoel Vilela
+#      @email: manoel_vilela@engineer.com
 #
-
 """
     An collection of usefull decorators for debug
     and time evaluation of functions flow
@@ -31,7 +32,7 @@ def debug(function):
     def _wrapper(*args, **kwargs):
         result = function(*args, **kwargs)
         for key, value in kwargs.items():
-            args += ('='.join([str(x) for x in (key, value)]))
+            args += tuple(['{}={!r}'.format(key, value)])
         if len(args) == 1:
             args = '({})'.format(args[0])
         print('@{0}{1} -> {2}'.format(function.__name__, args, result))

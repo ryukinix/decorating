@@ -1,10 +1,11 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
-#   Python Script
+#    Copyright © Manoel Vilela 2016
 #
-#   Copyright © Manoel Vilela
-#
+#    @project: Decorating
+#     @author: Manoel Vilela
+#      @email: manoel_vilela@engineer.com
 #
 
 """
@@ -23,7 +24,7 @@ from decorating.animation import animated, writing
 from decorating.debugging import count_time, counter, debug
 from decorating.general import cache
 
-__version__ = '0.4'
+__version__ = '0.5.1'
 __author__ = 'Manoel Vilela'
 __email__ = 'manoel_vilela@engineer.com'
 __url__ = 'https://github.com/ryukinix/decorating'

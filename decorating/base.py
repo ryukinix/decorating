@@ -1,9 +1,11 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
-#   Python Script
+#    Copyright © Manoel Vilela 2016
 #
-#   Copyright © Manoel Vilela
+#    @project: Decorating
+#     @author: Manoel Vilela
+#      @email: manoel_vilela@engineer.com
 #
 # pylint: disable=no-member
 # pylint: disable=too-few-public-methods
@@ -63,12 +65,10 @@ class DecoratorManager(metaclass=ABCMeta):
         """You can deactivate any behavior re-writing your method here"""
         pass
 
-    @abstractmethod
     def __enter__(self):
         """Activated when enter in a context-manager (with keyword)"""
         self.start()
 
-    @abstractmethod
     def __exit__(self, *args):
         """Triggered when exit from a block of context-manager"""
         self.stop()

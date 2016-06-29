@@ -1,9 +1,11 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
-#   Python Script
+#    Copyright © Manoel Vilela 2016
 #
-#   Copyright © Manoel Vilela
+#    @project: Decorating
+#     @author: Manoel Vilela
+#      @email: manoel_vilela@engineer.com
 #
 # pylint: disable=no-member
 # pylint: disable=too-few-public-methods
@@ -21,7 +23,7 @@ from warnings import warn
 from decorating.base import DecoratorManager
 
 
-# A UNINTINED LOL-ZONE: SORRY FOR THIS
+# A UNINTENDED LOL-ZONE: SORRY FOR THIS
 # -----------+----------+-----------
 #     /\O    |    _O    |      O
 #      /\/   |   //|_   |     /_
@@ -29,7 +31,7 @@ from decorating.base import DecoratorManager
 #    /  \    |   /|     |    / |
 #  LOL  LOL  |   LLOL   |  LOLLOL
 # -----------+----------+-----------
-# BLACK MAGICK FULL FEATURED ENABLED
+# FULL FEATURED BLACK MAGICK ENABLED
 
 
 class Decorator(DecoratorManager):
@@ -117,22 +119,6 @@ class Decorator(DecoratorManager):
             return super(cls, cls)._over_wrapper(instance, args[0])
 
         return instance
-
-    def start(self):
-        """You active here your pre-fucking crazy feature"""
-        pass
-
-    def stop(self):
-        """You can deactivate any behavior re-writing your method here"""
-        pass
-
-    def __enter__(self):
-        """Activated when enter in a context-manager (with keyword)"""
-        self.start()
-
-    def __exit__(self, *args):
-        """Triggered when exit from a block of context-manager"""
-        self.stop()
 
     def _over_wrapper(self, function):
         @wraps(function)

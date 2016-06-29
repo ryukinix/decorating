@@ -1,12 +1,12 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 #
-#   Python Script
+#    Copyright © Manoel Vilela 2016
 #
-#   Copyright © Manoel Vilela
+#    @project: Decorating
+#     @author: Manoel Vilela
+#      @email: manoel_vilela@engineer.com
 #
-#
-
 
 """
     Module focused in termcolor operations
@@ -19,7 +19,7 @@
 import sys
 
 COLORED = True
-if not sys.stdout.isatty():
+if not sys.stdout.isatty() or sys.platform == 'win32':
     COLORED = False  # pragma: no cover
 
 COLOR_MAP = {
@@ -42,7 +42,7 @@ STYLE_MAP = {
 }
 
 
-def colorize(printable, color, style='normal'):
+def colorize(printable, color, style='normal', autoreset=True):
     """Colorize some message with ANSI colors specification
 
     :param printable: interface whose has __str__ or __repr__ method
@@ -59,5 +59,5 @@ def colorize(printable, color, style='normal'):
     return '{color}{printable}{reset}'.format_map({
         'printable': printable,
         'color': COLOR_MAP[color].format(style=STYLE_MAP[style]),
-        'reset': COLOR_MAP['reset'],
+        'reset': COLOR_MAP['reset'] if autoreset else '',
     })
