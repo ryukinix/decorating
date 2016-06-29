@@ -39,4 +39,7 @@
    ✔ refactored animation.space_wave function, we can pass now a sequence of frames @done (16-06-27 23:18)
    ✔ fixed misspeling on LOL-zone of decorating.decorator @done (16-06-27 23:18)
    ✔ updated all header of files based a new pattern @done (16-06-27 23:18)
-   
+ ✔ v0.5.1 @done (16-06-29 03:50)
+   ✔ fixed bug for keyword arguments on decorating.debugging.debug @done (16-06-29 03:50)
+   ✔ add more tests for debug decorator @done (16-06-29 03:50)
+   ✔ simplification of code on base.DecoratorManager & decorator.Decorator @done (16-06-29 03:50)

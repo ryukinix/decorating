@@ -32,7 +32,7 @@ def debug(function):
     def _wrapper(*args, **kwargs):
         result = function(*args, **kwargs)
         for key, value in kwargs.items():
-            args += ('='.join([str(x) for x in (key, value)]))
+            args += tuple(['{}={!r}'.format(key, value)])
         if len(args) == 1:
             args = '({})'.format(args[0])
         print('@{0}{1} -> {2}'.format(function.__name__, args, result))

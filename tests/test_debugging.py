@@ -23,16 +23,35 @@ class TestDebugDecorator(unittest.TestCase):
         def lol(x):
             return '?'
 
+        @debug
+        def lain(wired='suicide'):
+            return wired
+
         table_tests = {
-            (add, (1, 2)): ["add", "(1, 2)", 3],
-            (add, (1, 3)): ["add", "(1, 3)", 4],
-            (lol, (1,)): ["lol", "(1)", '?']
+            'test1': {
+                'func': add,
+                'input': [(1, 2), {}],
+                'output': ["add", "(1, 2)", 3],
+            },
+            'test2': {
+                'func': lol,
+                'input': [(1,), {}],
+                'output': ["lol", "(1)", '?'],
+            },
+            'test3': {
+                'func': lain,
+                'input': [(), {'wired': 'suicide'}],
+                'output': ['lain', "(wired='suicide')", 'suicide'],
+            },
         }
 
-        for test, expected in table_tests.items():
-            func, args = test
-            result = func(*args)
-            self.assertEqual(result, expected[-1], "Result of call wrong")
+        for index, test in table_tests.items():
+            func = test['func']
+            args, kwargs = test['input']
+            expected = test['output']
+            result = func(*args, **kwargs)
+            test_message = "Result of call wrong at {!r}".format(index)
+            self.assertEqual(result, expected[-1], test_message)
             self.assertEqual(func.last_output, expected,
                              "debug doesn't returns correct values")
 
