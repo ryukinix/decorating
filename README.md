@@ -11,7 +11,8 @@ Decorating: A Meta Repo To Decorators
 
 # Abstract
 
-This project was encouraging a explore the limits of decorators powers in Python, whose, however is not so knew for everyone (mainly the beginners), is a extremely useful feature of the language similar, whose can be similar of Lisp Macros, but without change the AST. The famous examples is the `@animated` and `@writing` decorator. BTW, because is fun too. All the repository is made from scratch, just using the Python `stdlib`, no [dependency](requirements.txt)!
+This project encourages an exploration into the limits of decorators in `Python`. While decorators might by new to beginners, they are an extremely useful feature of the language. They can be similar to Lisp Macros, but without changes to the AST. Famous decorator examples are `@animated` and `@writing`. This repository is made from scratch, just using Python's Standard Library, no dependency!
+
 
 ## Installation
 
