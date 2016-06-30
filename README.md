@@ -52,7 +52,7 @@ Well
 
 ## Writing
 
-Another project mine called [MAL](http://www.github.com/ryukinix/mal) whose is a basic command line interface for MyAnimeList, I recently test the features of @writing only adding 3 lines on my code! Check the awesome effect:
+Another project of mine called [MAL](http://www.github.com/ryukinix/mal) which is a basic command line interface for MyAnimeList. The decorator @writing can be used by just adding 3 lines of code! Check out the awesome effect:
 
 [![asciicast](https://asciinema.org/a/ctt1rozymvsqmeipc1zrqhsxb.png)](https://asciinema.org/a/ctt1rozymvsqmeipc1zrqhsxb)
 
@@ -65,27 +65,27 @@ cd decorating
 sudo make develop
 ```
 
-The develop mode creates a .egg-info (egg-link) as symlink with your standard `site-packages`/`dist-packages` directory. Don't be worry with the `decorating.egg-info`, is only information for the package egg to link with your `PYTHONPATH`. For that, the usage is dynamic, you can modify the code in test on the command line always using absolute imports in anywhere (like the first example)
+The develop mode creates a .egg-info (egg-link) as a symlink in your standard `site-packages`/`dist-packages` directory. Don't worry with the `decorating.egg-info`, it's only information for the package egg to link with your `PYTHONPATH`. For that, the usage is dynamic, you can modify the code in test on the command line always using absolute imports in anywhere (like the first example)
 
 ### Contributing
 
-Avoid I blame you. You maybe don't will like that. I'm not Linus, but I can really do heavy critiques sometimes.[/lain ]. Although I'm joking, keep your life more easy, so setup the `pre-commit` after clone!
+Please make sure the code passes lint and tests before sending a pull request. You can set up pre-commit to make this easy.
 
-In the root of git repository, do that commands:
+In the root of git repository, run these commands after cloning the project:
 ```
 sudo pip install pre-commit pylint nose2
 pre-commit install
 ```
 
-If you don't know about pre-commit, check [pre-commit](http://pre-commit.com) website.
+If you don't know about pre-commit, check the [pre-commit](http://pre-commit.com) website.
 
-Now you can create a new branch `git checkout -b feature` based on the `master` (or other you wants improves, like `dev`) and send a pull-request for me!
+Now you can create a new branch `git checkout -b feature` based on the `master` (or other you want to improve, like `dev`) and send a pull-request to me!
 
-If you just wants know something, I give a suggestion, create a new issue! I'll happy with it.
+If you just want to know something or give me a suggestion, create a new issue!
 
 ## License
 [![PyPi License](https://img.shields.io/pypi/l/decorating.svg)](https://pypi.python.org/pypi/decorating/)
 
 MIT
 
-Because good things need be free.
+Because good things need to be free.
