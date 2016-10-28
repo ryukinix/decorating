@@ -90,34 +90,10 @@ class Animation(Unbuffered):
         """Erase something whose you write before: message"""
         if not message:
             message = self.last_message
-        self.fill_with_spaces(message)
-        self.write_backspaces(message)
-
-    def fill_with_spaces(self, message):
-        """
-        Function: fill_with_spaces
-        Summary: fill the actual stream with spaces based on the last message
-                 without count the escape codes
-        Examples: >>> stream.fill_with_spaces('banana')
-        Attributes:
-            @param (message): a str-like object based on the last write
-        Returns: None
-        """
-        to_erase = self.ansi_escape.sub('', message)
-        block_to_erase = len(to_erase)
-        super(Animation, self).write('\r' + block_to_erase * ' ')
-
-    def write_backspaces(self, message):
-        """
-        Function: write_backspaces
-        Summary: send a set of backspaces to the default stream
-                 to help 'erase' the last message
-        Examples: stream.write_backspaces('banana')
-        Attributes:
-            @param (message): a str-like object based on the last write
-        Returns: None
-        """
-        super(Animation, self).write(len(message) * "\010")
+        # Move cursor to the beginning of line
+        super(Animation, self).write("\033[G")
+        # Erase in line from cursor
+        super(Animation, self).write("\033[K")
 
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
