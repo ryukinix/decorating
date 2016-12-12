@@ -147,11 +147,12 @@ def _spinner(control):
     iterator = zip(cycle(NBRAILY), cycle(asciiart.VPULSE))
     for i, (start, end) in enumerate(iterator):
         padding = control.fpadding(i + control.bias)
-        info = dict(message=colorize_no_reset(control.message, 'red'),
-                    padding=colorize_no_reset(padding, 'blue'),
-                    start=colorize_no_reset(start, 'cyan'),
-                    end=color.colorize(end, 'cyan'))
-        message = '\r' + template.format(**info)
+        message = '\r' + template.format(
+            message=colorize_no_reset(control.message, 'red'),
+            padding=colorize_no_reset(padding, 'blue'),
+            start=colorize_no_reset(start, 'cyan'),
+            end=color.colorize(end, 'cyan')
+        )
         with control.stream.lock:
             control.stream.write(message)
         if not control.running:

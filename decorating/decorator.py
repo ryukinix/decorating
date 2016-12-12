@@ -60,7 +60,7 @@ class Decorator(DecoratorManager):
             self.logoff()
 
         def login(self):
-            print('Welcome to the Wired, {user}!'.format(**vars(self)))
+            print('Welcome to the Wired, {user}!'.format(user=self.user))
 
         def logoff(self):
             print('Close this world, open the next!'.)
