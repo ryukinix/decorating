@@ -14,7 +14,7 @@
     If the exection is not attatched in any tty,
     so colored is disabled
 """
-
+from __future__ import unicode_literals
 
 import sys
 
@@ -56,8 +56,8 @@ def colorize(printable, color, style='normal', autoreset=True):
     if color not in COLOR_MAP:
         raise RuntimeError('invalid color set, no {}'.format(color))
 
-    return '{color}{printable}{reset}'.format_map({
-        'printable': printable,
-        'color': COLOR_MAP[color].format(style=STYLE_MAP[style]),
-        'reset': COLOR_MAP['reset'] if autoreset else '',
-    })
+    return '{color}{printable}{reset}'.format(
+        printable=printable,
+        color=COLOR_MAP[color].format(style=STYLE_MAP[style]),
+        reset=COLOR_MAP['reset'] if autoreset else ''
+    )

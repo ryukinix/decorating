@@ -17,10 +17,11 @@
     * Decorator: A base class for creating new decorators
 
 """
+from __future__ import unicode_literals
 
 from functools import wraps
 from warnings import warn
-from decorating.base import DecoratorManager
+from .base import DecoratorManager
 
 
 # A UNINTENDED LOL-ZONE: SORRY FOR THIS
@@ -59,7 +60,7 @@ class Decorator(DecoratorManager):
             self.logoff()
 
         def login(self):
-            print('Welcome to the Wired, {user}!'.format_map(vars(self)))
+            print('Welcome to the Wired, {user}!'.format(user=self.user))
 
         def logoff(self):
             print('Close this world, open the next!'.)
@@ -116,7 +117,7 @@ class Decorator(DecoratorManager):
         instance = cls.recreate(*args, **kwargs)
         cls.instances.append(instance)
         if any(args) and callable(args[0]):  # pass a function/class
-            return super(cls, cls)._over_wrapper(instance, args[0])
+            return instance._over_wrapper(args[0])
 
         return instance
 

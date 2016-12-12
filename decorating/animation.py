@@ -40,17 +40,15 @@
 
 
 """
-
+from __future__ import unicode_literals
 import signal
 import sys
 import threading
 from math import sin
 from functools import partial
 from itertools import cycle
-from decorating import decorator
-from decorating import color
-from decorating import stream
-from decorating import asciiart
+from . import decorator, color, stream, asciiart
+from .general import zip
 
 
 # THIS IS A LOL ZONE
@@ -98,7 +96,7 @@ class AnimationController(object):
     messages = []
 
 
-def space_wave(λ, char=asciiart.WAVE, amplitude=12, frequency=0.1):
+def space_wave(phase, char=asciiart.WAVE, amplitude=12, frequency=0.1):
     """
     Function: space_wave
     Summary: This function is used to generate a wave-like padding
@@ -126,7 +124,7 @@ def space_wave(λ, char=asciiart.WAVE, amplitude=12, frequency=0.1):
               █
 
     Attributes:
-        @param (λ): your positive variable, can be a int or float
+        @param (phase): your positive variable, can be a int or float
         @param (char) default='█': the char to construct the space_wave
         @param (amplitude) default=10: a float/int number to describe
                                        how long is the space_wave max
@@ -135,7 +133,7 @@ def space_wave(λ, char=asciiart.WAVE, amplitude=12, frequency=0.1):
     """
     wave = cycle(char)
     return ''.join((next(wave) for x in range
-                    (int((amplitude + 1) * abs(sin(frequency * (λ)))))))
+                    (int((amplitude + 1) * abs(sin(frequency * (phase)))))))
 
 
 def _spinner(control):
@@ -149,11 +147,12 @@ def _spinner(control):
     iterator = zip(cycle(NBRAILY), cycle(asciiart.VPULSE))
     for i, (start, end) in enumerate(iterator):
         padding = control.fpadding(i + control.bias)
-        info = dict(message=colorize_no_reset(control.message, 'red'),
-                    padding=colorize_no_reset(padding, 'blue'),
-                    start=colorize_no_reset(start, 'cyan'),
-                    end=color.colorize(end, 'cyan'))
-        message = '\r' + template.format_map(info)
+        message = '\r' + template.format(
+            message=colorize_no_reset(control.message, 'red'),
+            padding=colorize_no_reset(padding, 'blue'),
+            start=colorize_no_reset(start, 'cyan'),
+            end=color.colorize(end, 'cyan')
+        )
         with control.stream.lock:
             control.stream.write(message)
         if not control.running:

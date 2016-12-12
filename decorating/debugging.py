@@ -11,6 +11,7 @@
     An collection of usefull decorators for debug
     and time evaluation of functions flow
 """
+from __future__ import unicode_literals
 
 from functools import wraps
 from time import time

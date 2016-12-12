@@ -50,6 +50,7 @@
 
     LOOOOOOOOOOOOOL ART
 """
+from __future__ import unicode_literals
 
 # START
 #     /\O    |    _O    |      O
