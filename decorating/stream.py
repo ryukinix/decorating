@@ -146,7 +146,7 @@ class Writting(Unbuffered):
         self.delay = delay
 
     def write(self, message, flush=True):
-        if isinstance(message, bytes):
+        if isinstance(message, bytes):  # pragma: no cover
             message = message.decode('utf-8')
 
         """A Writting like write method, delayed at each char"""
