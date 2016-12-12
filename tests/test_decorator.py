@@ -40,12 +40,12 @@ class Wired(decorator.Decorator):
 
     def login(self):
         """Login in the wired with the default user"""
-        print('Welcome to the Wired, {user}!'.format_map(vars(self)))
+        print('Welcome to the Wired, {user}!'.format(**vars(self)))
 
     def logoff(self):
         """Exits of this world, open the next"""
         print('Close this world, open the next!')
-        print('Goodbye, {user}...'.format_map(vars(self)))
+        print('Goodbye, {user}...'.format(**vars(self)))
         del self.user
 
 

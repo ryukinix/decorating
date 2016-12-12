@@ -20,12 +20,12 @@
     * Decorator: Abstract Class for creating new decorators
 
 """
-
+from __future__ import unicode_literals
 from abc import abstractmethod, ABCMeta
+from .general import with_metaclass
 
 
-class Stream(metaclass=ABCMeta):
-
+class Stream(with_metaclass(ABCMeta)):
     """A base class whose is specify a Stream is
 
     We need at least a stream on init and a
@@ -43,8 +43,7 @@ class Stream(metaclass=ABCMeta):
         pass
 
 
-class DecoratorManager(metaclass=ABCMeta):
-
+class DecoratorManager(with_metaclass(ABCMeta)):
     """Decorator-Context-Manager base class to keep easy creating more decorators
 
     argument: can be empty or a callable object (function or class)

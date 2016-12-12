@@ -20,6 +20,7 @@
     * Writing(Unbuffered) :: stream for writing delayed typing
 
 """
+from __future__ import unicode_literals
 
 import time
 import re
@@ -38,7 +39,7 @@ class Unbuffered(Stream):
     lock = Lock()
 
     def __init__(self, stream):
-        super().__init__(stream)
+        super(Unbuffered, self).__init__(stream)
         self.stream = stream
 
     def write(self, message, flush=True):
@@ -122,7 +123,7 @@ class Clean(Unbuffered):
         # the stderr
         with self.lock:
             self.paralell_stream.erase()
-            super().write(message, flush)
+            super(Clean, self).write(message, flush)
             # for some reason I need to put a '\n' here to correct
             # print of the message, if don't put this, the print internal
             # during the animation is not printed.
@@ -145,7 +146,10 @@ class Writting(Unbuffered):
         self.delay = delay
 
     def write(self, message, flush=True):
+        if isinstance(message, bytes):
+            message = message.decode('utf-8')
+
         """A Writting like write method, delayed at each char"""
         for char in message:
             time.sleep(self.delay * (4 if char == '\n' else 1))
-            super().write(char, flush)
+            super(Writting, self).write(char, flush)
