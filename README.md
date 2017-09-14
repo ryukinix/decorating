@@ -12,30 +12,12 @@ Decorating: A Meta Repo To Decorators
 
 # Abstract
 
-This project encourages an exploration into the limits of decorators in `Python`. While decorators might by new to beginners, they are an extremely useful feature of the language. They can be similar to Lisp Macros, but without changes to the AST. Famous decorator examples are `@animated` and `@writing`. This repository is made from scratch, just using Python's Standard Library, no dependency!
-
-
-## Installation
-
-**INFO**: we need some people to do support for Python2, only Python3 for now. Check #3
-
-**stable: last release**:
-`sudo pip install decorating`
-
-
-**bleeding-edge**:
-`sudo pip install git+https://www.github.com/ryukinix/decorating`
-
-# Usage
-
-Public decorators on the API of decorators `decorating`:
-
-* **debug**
-* **cache**
-* **counter**
-* **count_time**
-* **animated**
-* **writing**
+This project encourages an exploration into the limits of decorators
+in `Python`. While decorators might by new to beginners, they are an
+extremely useful feature of the language. They can be similar to Lisp
+Macros, but without changes to the AST. Great decorators from this
+packages are `@animated` and `@writing`. This repository is made from
+scratch, just using Python's Standard Library, no dependency!
 
 
 # Examples
@@ -45,48 +27,77 @@ Public decorators on the API of decorators `decorating`:
 *Using as decorator and mixed with context-managers*
 ![animation](https://i.imgur.com/hjkNvEE.gif)
 
-Well
-
 *Using with nested context-managers*
 ![context-manager](https://i.imgur.com/EeVnDyy.gif)
 
 
 ## Writing
 
-Another project of mine called [MAL](http://www.github.com/ryukinix/mal) which is a basic command line interface for MyAnimeList. The decorator @writing can be used by just adding 3 lines of code! Check out the awesome effect:
+Another project mine called [MAL] uses the decorating package —-
+basically a command line interface for [MyAnimeList]. The decorator
+@writing can be used by just adding 3 lines of code! The behavior is a
+retro typing-like computer. Check out the awesome effect:
 
 [![asciicast](https://asciinema.org/a/ctt1rozymvsqmeipc1zrqhsxb.png)](https://asciinema.org/a/ctt1rozymvsqmeipc1zrqhsxb)
 
+[MAL]: https://www.github.com/ryukinix/mal
+[MyAnimeList]: https://myanimelist.net/
 
-#### Developers
+More examples are covered on my personal blog post about [decorating](manoel.tk/decorating).
 
-```Bash
-sudo git clone https://www.github.com/ryukinix/decorating
-cd decorating
-sudo make develop
+# Decorators & Usage
+
+Currently public decorators on the API of decorators `decorating`:
+
+* **decorating.debug**
+* **decorating.cache**
+* **decorating.counter**
+* **decorating.count_time**
+* **decorating.animated**
+* **decorating.writing**
+
+Mostly decorators has a pretty consistent usage, but for now only `animated`
+and `writing` has support to use as `contextmanagers` using the `with` syntax.
+
+# Installation
+
+Supported Python versions:
+
+* Python3.4+
+* Python2.7
+
+You can install the last release on [PyPI] by calling:
+
+```shell
+pip install --user decorating
 ```
 
-The develop mode creates a .egg-info (egg-link) as a symlink in your standard `site-packages`/`dist-packages` directory. Don't worry with the `decorating.egg-info`, it's only information for the package egg to link with your `PYTHONPATH`. For that, the usage is dynamic, you can modify the code in test on the command line always using absolute imports in anywhere (like the first example)
+If you want get the last development version install directly by the git
+repository:
 
-### Contributing
-
-Please make sure the code passes lint and tests before sending a pull request. You can set up pre-commit to make this easy.
-
-In the root of git repository, run these commands after cloning the project:
-```
-sudo pip install pre-commit pylint nose2
-pre-commit install
+```shell
+pip install --user git+https://www.github.com/ryukinix/decorating
 ```
 
-If you don't know about pre-commit, check the [pre-commit](http://pre-commit.com) website.
+We have a published package on [Arch Linux],which you can install
+using your favorite AUR Helper, like `pacaur` or `yaourt`:
 
-Now you can create a new branch `git checkout -b feature` based on the `master` (or other you want to improve, like `dev`) and send a pull-request to me!
+```shell
+yaourt -S python-decorating
+```
 
-If you just want to know something or give me a suggestion, create a new issue!
+[Arch Linux]: https://aur.archlinux.org/packages/python-decorating/
+[PyPI]: https://pypi.python.org/pypi/decorating/
+
+Though since the version `0.6` we have support for Python2.7, an AUR
+package for Python2 was not made yet. Fill a issue if you have
+interest on that :). Thanks to [Maxim Kuznetsov][https://github.com/mkuznets]
+which implemented the necessary changes to make compatible with Python2!
+
 
 ## License
 [![PyPi License](https://img.shields.io/pypi/l/decorating.svg)](https://pypi.python.org/pypi/decorating/)
 
-MIT
+[MIT](LICENSE)
 
 Because good things need to be free.
