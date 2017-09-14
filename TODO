@@ -30,5 +30,5 @@
  ✔ support @animate print something without breaking the animation @done (16-05-21 19:21) v0.4
  ✔ fix problem with the double-newlines added with print() in inside of @animated @done (16-05-22 07:40) v0.4
  ✔ add the awesome @writing decorator @done (16-05-22 07:41)
+ ✔ generate a read-the-docs page using sphinx
  ☐ animated: create params for padding function & the spinnners (left and right)
- ☐ generate a read-the-docs page using sphinx
