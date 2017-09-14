@@ -91,8 +91,10 @@ yaourt -S python-decorating
 
 Though since the version `0.6` we have support for Python2.7, an AUR
 package for Python2 was not made yet. Fill a issue if you have
-interest on that :). Thanks to [Maxim Kuznetsov][https://github.com/mkuznets]
+interest on that :). Thanks to [Maxim Kuznetsov]
 which implemented the necessary changes to make compatible with Python2!
+
+[Maxim Kuznetsov]: https://github.com/mkuznets
 
 
 ## License
