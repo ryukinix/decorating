@@ -47,4 +47,4 @@
  * use ANSI escape codes to erase lines, fix weird inverse behavior in some terminals
 - v0.6
  * add support for Python2.7
- * add proper docs using sphinx on decorating.readthedocs.org
+ * add proper docs using sphinx on decorating.readthedocs.io
