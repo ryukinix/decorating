@@ -1,47 +1,50 @@
- - v0.1-alpha
-  * add a animated decorator for slow functions
- - v0.1.1-alpha
-  * add optional argument for decorator animated, more descriptive messages
- - v0.2-beta
-  * support context manager for decorator @animated
-  * add basics decorators: cache, count_time, debug, counter and
-  * handle sigint signal when user send ctrl+c (stop thread and animation) for animated
-  * for the complex animated decorator, use a class instead a simple function
-  * refactoring the _spinner function for more clearness
-  * added tests for the general.py, the basic decorators
- - v0.2.1-beta
-  * use animated as class instead a function wrapper (equal to AnimatedDecorator)
-  * fixed tests for count_time decorator, use sleep to avoid time almost 0
-  * remove requirements-dev because is useless and the build was breaking with this
+- v0.1-alpha
+ * add a animated decorator for slow functions
+- v0.1.1-alpha
+ * add optional argument for decorator animated, more descriptive messages
+- v0.2-beta
+ * support context manager for decorator @animated
+ * add basics decorators: cache, count_time, debug, counter and
+ * handle sigint signal when user send ctrl+c (stop thread and animation) for animated
+ * for the complex animated decorator, use a class instead a simple function
+ * refactoring the _spinner function for more clearness
+ * added tests for the general.py, the basic decorators
+- v0.2.1-beta
+ * use animated as class instead a function wrapper (equal to AnimatedDecorator)
+ * fixed tests for count_time decorator, use sleep to avoid time almost 0
+ * remove requirements-dev because is useless and the build was breaking with this
 - v0.3
-  * closes #2: fix usage of function without args
-  * add support for nested context managers
-  * add inital tests for animated decorator, whose will be more hard to break the things
-  * correct setup of CI with coverage using codecov (96% now!)
-  * fix problem with logging in animated.py to not progagate the logging when is desactivated (affects ryukinix/mal)
-  * in nested @animated executions, correct handle animation context
- - v0.4
-  * general refactoring of lib on a better idiomatic way
-  * added more asciiarts on asciiart.py
-  * added the awesome @writing decorator
-  * wrote the docstrings for all functions and modules (in a simple way, BTW)
-  * added stream.py as colection of streams
-  * added a base class for Decorator, useful for new decorators
-  * split debugging decorators (debug, counter, count_time) on debugging.py
-  * fix the problem of double-lines! beauty use of @animated decorator without pain of internal prints
-  * added the decorator base class
-  * added the @writing decorator on animation.py
-  * added new tests from  hell: color, decorator and review of debugging.
-  * added .coveragerc in the repostiory based on you own specification.
- - v0.5
-  * add autoreset param to colorize for win32 plataform
-  * add fill with spaces & write backspaces methods on stream.Animation
-  * refactored animation.space_wave function, we can pass now a sequence of frames
-  * fixed misspeling on LOL-zone of decorating.decorator
-  * updated all header of files based a new pattern
- - v0.5.1
-  * fixed bug for keyword arguments on decorating.debugging.debug
-  * add more tests for debug decorator
-  * simplification of code on base.DecoratorManager & decorator.Decorator
- - v0.5.2
-  * use ANSI escape codes to erase lines, fix weird inverse behavior in some terminals 
+ * closes #2: fix usage of function without args
+ * add support for nested context managers
+ * add inital tests for animated decorator, whose will be more hard to break the things
+ * correct setup of CI with coverage using codecov (96% now!)
+ * fix problem with logging in animated.py to not progagate the logging when is desactivated (affects ryukinix/mal)
+ * in nested @animated executions, correct handle animation context
+- v0.4
+ * general refactoring of lib on a better idiomatic way
+ * added more asciiarts on asciiart.py
+ * added the awesome @writing decorator
+ * wrote the docstrings for all functions and modules (in a simple way, BTW)
+ * added stream.py as colection of streams
+ * added a base class for Decorator, useful for new decorators
+ * split debugging decorators (debug, counter, count_time) on debugging.py
+ * fix the problem of double-lines! beauty use of @animated decorator without pain of internal prints
+ * added the decorator base class
+ * added the @writing decorator on animation.py
+ * added new tests from  hell: color, decorator and review of debugging.
+ * added .coveragerc in the repostiory based on you own specification.
+- v0.5
+ * add autoreset param to colorize for win32 plataform
+ * add fill with spaces & write backspaces methods on stream.Animation
+ * refactored animation.space_wave function, we can pass now a sequence of frames
+ * fixed misspeling on LOL-zone of decorating.decorator
+ * updated all header of files based a new pattern
+- v0.5.1
+ * fixed bug for keyword arguments on decorating.debugging.debug
+ * add more tests for debug decorator
+ * simplification of code on base.DecoratorManager & decorator.Decorator
+- v0.5.2
+ * use ANSI escape codes to erase lines, fix weird inverse behavior in some terminals
+- v0.6
+ * add support for Python2.7
+ * add proper docs using sphinx on decorating.readthedocs.org
