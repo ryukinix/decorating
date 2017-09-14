@@ -41,11 +41,11 @@ setup(
         "Development Status :: 4 - Beta",
         "Topic :: Utilities",
         "Operating System :: Unix",
+        "Programming Language :: Python :: 2.7"
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.2",
-        "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6"
     ],
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords='decorating animation decorators decorator',
