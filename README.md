@@ -43,7 +43,7 @@ retro typing-like computer. Check out the awesome effect:
 [MAL]: https://www.github.com/ryukinix/mal
 [MyAnimeList]: https://myanimelist.net/
 
-More examples are covered on my personal blog post about [decorating](manoel.tk/decorating).
+More examples are covered on my personal blog post about [decorating](http://manoel.tk/decorating).
 
 # Decorators & Usage
 
