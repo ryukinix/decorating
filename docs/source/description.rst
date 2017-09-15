@@ -37,7 +37,7 @@ typing-like computer. Check out the awesome effect:
 |asciicast|
 
 More examples are covered on my personal blog post about
-`decorating <manoel.tk/decorating>`__.
+`decorating <http://manoel.tk/decorating>`__.
 
 Decorators & Usage
 ==================
@@ -88,7 +88,7 @@ you can install using your favorite AUR Helper, like ``pacaur`` or
 
 Though since the version ``0.6`` we have support for Python2.7, an AUR
 package for Python2 was not made yet. Fill a issue if you have interest
-on that :). Thanks to [Maxim Kuznetsov][https://github.com/mkuznets]
+on that :). Thanks to `Maxim Kuznetsov <https://github.com/mkuznets>`
 which implemented the necessary changes to make compatible with Python2!
 
 License
