@@ -201,47 +201,63 @@ class AnimatedDecorator(decorator.Decorator):
     # and proper handle that, like ctrl + c and exits
     animation = AnimationController()
 
+    _enabled = True
+
     def __init__(self, message=None, fpadding=space_wave):
         super(AnimatedDecorator, self).__init__()
         self.message = message
         self.spinner.fpadding = fpadding
 
+    @property
+    def enabled(self):
+        """True if animation is enabled, false otherwise"""
+        return AnimatedDecorator._enabled
+
+    @enabled.setter
+    def enabled(self, state):
+        """Set a state on AnimatedDecorator._enabled"""
+        AnimatedDecorator._enabled = state
+
     def start(self, autopush=True):
         """Start a new animation instance"""
-        if autopush:
-            self.push_message(self.message)
-        self.spinner.message = ' - '.join(self.animation.messages)
-        if not self.spinner.running:
-            self.animation.thread = threading.Thread(target=_spinner,
-                                                     args=(self.spinner,))
-            self.spinner.running = True
-            self.animation.thread.start()
-            sys.stdout = stream.Clean(sys.stdout, self.spinner.stream)
+        if self.enabled:
+            if autopush:
+                self.push_message(self.message)
+                self.spinner.message = ' - '.join(self.animation.messages)
+            if not self.spinner.running:
+                self.animation.thread = threading.Thread(target=_spinner,
+                                                         args=(self.spinner,))
+                self.spinner.running = True
+                self.animation.thread.start()
+                sys.stdout = stream.Clean(sys.stdout, self.spinner.stream)
 
     @classmethod
     def stop(cls):
         """Stop the thread animation gracefully and reset_message"""
-        if cls.spinner.running:
-            cls.spinner.running = False
-            cls.animation.thread.join()
+        if AnimatedDecorator._enabled:
+            if cls.spinner.running:
+                cls.spinner.running = False
+                cls.animation.thread.join()
 
-        if any(cls.animation.messages):
-            cls.pop_message()
+            if any(cls.animation.messages):
+                cls.pop_message()
 
-        sys.stdout = sys.__stdout__
+            sys.stdout = sys.__stdout__
 
     def __enter__(self):
-        self.animation.context += 1
-        self.start()
+        if self.enabled:
+            self.animation.context += 1
+            self.start()
 
     def __exit__(self, *args):
         # if the context manager doesn't running yet
-        self.animation.context -= 1
-        self.pop_message()
-        if self.animation.context == 0:
-            self.stop()
-        else:
-            self.start(autopush=False)
+        if self.enabled:
+            self.animation.context -= 1
+            self.pop_message()
+            if self.animation.context == 0:
+                self.stop()
+            else:
+                self.start(autopush=False)
 
     @classmethod
     def push_message(cls, message):

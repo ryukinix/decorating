@@ -94,6 +94,15 @@ class TestAnimatedDecorator(unittest.TestCase):
         for level in (level1, level2):
             self.assertEqual(level, self.args, 'need returns the same I/O')
 
+    def test6(self):
+        """Try disable the animation decorated"""
+        print("Testing the enabled/disabled o animated")
+        animated.enabled = False
+        print("animated.enabled = False")
+        self.test4()
+        print("animated.enabled = True")
+        animated.enabled = True
+        self.test5()
 
 class TestWritingDecorator(unittest.TestCase):
 
