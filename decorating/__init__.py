@@ -11,7 +11,7 @@
 """
     DECORATING: A MODULE OF DECORATORS FROM HELL
 
-    You have that collection of decorators:
+    You have a collection of decorators, like thesexg:
 
     * animated: create animations on terminal until the result's returns
     * cache: returns without reprocess if the give input was already processed
@@ -23,6 +23,7 @@
 from decorating.animation import animated, writing
 from decorating.debugging import count_time, counter, debug
 from decorating.general import cache
+from decorating.monitor import monitor_stdout
 
 __version__ = '0.6'
 __author__ = 'Manoel Vilela'
@@ -36,5 +37,6 @@ __all__ = [
     'counter',
     'debug',
     'count_time',
-    'writing'
+    'writing',
+    'monitor_stdout'
 ]
