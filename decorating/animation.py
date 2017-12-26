@@ -59,6 +59,21 @@ from .general import zip
 # LOL  LOL  |   LLOL   |  LOLLOL
 
 
+
+# HACK: Global variables to customize behavior of spinner
+
+horizontal = asciiart.WAVE
+vertical1 = ''.join(x * 5 for x in asciiart.BRAILY)
+vertical2 = asciiart.VPULSE
+animation_color = {
+    'message': 'red',
+    'padding': 'blue',
+    'start': 'cyan',
+    'end': 'cyan'
+}
+
+
+
 class SpinnerController(object):
     """Variables to controlling the spinner in parallel
 
@@ -96,7 +111,7 @@ class AnimationController(object):
     messages = []
 
 
-def space_wave(phase, char=asciiart.WAVE, amplitude=12, frequency=0.1):
+def space_wave(phase, amplitude=12, frequency=0.1):
     """
     Function: space_wave
     Summary: This function is used to generate a wave-like padding
@@ -131,7 +146,7 @@ def space_wave(phase, char=asciiart.WAVE, amplitude=12, frequency=0.1):
         @param (frequency) default=0.1: the speed of change
     Returns: a unique string of a sequence of 'char'
     """
-    wave = cycle(char)
+    wave = cycle(horizontal)
     return ''.join((next(wave) for x in range
                     (int((amplitude + 1) * abs(sin(frequency * (phase)))))))
 
@@ -143,15 +158,14 @@ def _spinner(control):
     colorize_no_reset = partial(color.colorize, autoreset=False)
 
     template = '{padding} {start} {message} {end}'
-    NBRAILY = ''.join(x * 5 for x in asciiart.BRAILY)
-    iterator = zip(cycle(NBRAILY), cycle(asciiart.VPULSE))
+    iterator = zip(cycle(vertical1), cycle(vertical2))
     for i, (start, end) in enumerate(iterator):
         padding = control.fpadding(i + control.bias)
         message = '\r' + template.format(
-            message=colorize_no_reset(control.message, 'red'),
-            padding=colorize_no_reset(padding, 'blue'),
-            start=colorize_no_reset(start, 'cyan'),
-            end=color.colorize(end, 'cyan')
+            message=colorize_no_reset(control.message, animation_color['message']),
+            padding=colorize_no_reset(padding, animation_color['padding']),
+            start=colorize_no_reset(start, animation_color['start']),
+            end=color.colorize(end, animation_color['end'])
         )
         with control.stream.lock:
             control.stream.write(message)
