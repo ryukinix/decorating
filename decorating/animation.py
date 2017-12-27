@@ -59,6 +59,21 @@ from .general import zip
 # LOL  LOL  |   LLOL   |  LOLLOL
 
 
+
+# HACK: Global variables to customize behavior of spinner
+
+horizontal = asciiart.WAVE
+vertical1 = ''.join(x * 5 for x in asciiart.BRAILY)
+vertical2 = asciiart.VPULSE
+animation_color = {
+    'message': 'red',
+    'padding': 'blue',
+    'start': 'cyan',
+    'end': 'cyan'
+}
+
+
+
 class SpinnerController(object):
     """Variables to controlling the spinner in parallel
 
@@ -96,7 +111,7 @@ class AnimationController(object):
     messages = []
 
 
-def space_wave(phase, char=asciiart.WAVE, amplitude=12, frequency=0.1):
+def space_wave(phase, amplitude=12, frequency=0.1):
     """
     Function: space_wave
     Summary: This function is used to generate a wave-like padding
@@ -131,27 +146,26 @@ def space_wave(phase, char=asciiart.WAVE, amplitude=12, frequency=0.1):
         @param (frequency) default=0.1: the speed of change
     Returns: a unique string of a sequence of 'char'
     """
-    wave = cycle(char)
+    wave = cycle(horizontal)
     return ''.join((next(wave) for x in range
                     (int((amplitude + 1) * abs(sin(frequency * (phase)))))))
 
 
 def _spinner(control):
     if not sys.stdout.isatty():  # not send to pipe/redirection
-        return
+        return  # pragma: no cover
 
     colorize_no_reset = partial(color.colorize, autoreset=False)
 
     template = '{padding} {start} {message} {end}'
-    NBRAILY = ''.join(x * 5 for x in asciiart.BRAILY)
-    iterator = zip(cycle(NBRAILY), cycle(asciiart.VPULSE))
+    iterator = zip(cycle(vertical1), cycle(vertical2))
     for i, (start, end) in enumerate(iterator):
         padding = control.fpadding(i + control.bias)
         message = '\r' + template.format(
-            message=colorize_no_reset(control.message, 'red'),
-            padding=colorize_no_reset(padding, 'blue'),
-            start=colorize_no_reset(start, 'cyan'),
-            end=color.colorize(end, 'cyan')
+            message=colorize_no_reset(control.message, animation_color['message']),
+            padding=colorize_no_reset(padding, animation_color['padding']),
+            start=colorize_no_reset(start, animation_color['start']),
+            end=color.colorize(end, animation_color['end'])
         )
         with control.stream.lock:
             control.stream.write(message)
@@ -201,47 +215,63 @@ class AnimatedDecorator(decorator.Decorator):
     # and proper handle that, like ctrl + c and exits
     animation = AnimationController()
 
+    _enabled = True
+
     def __init__(self, message=None, fpadding=space_wave):
         super(AnimatedDecorator, self).__init__()
         self.message = message
         self.spinner.fpadding = fpadding
 
+    @property
+    def enabled(self):
+        """True if animation is enabled, false otherwise"""
+        return AnimatedDecorator._enabled
+
+    @enabled.setter
+    def enabled(self, state):
+        """Set a state on AnimatedDecorator._enabled"""
+        AnimatedDecorator._enabled = state
+
     def start(self, autopush=True):
         """Start a new animation instance"""
-        if autopush:
-            self.push_message(self.message)
-        self.spinner.message = ' - '.join(self.animation.messages)
-        if not self.spinner.running:
-            self.animation.thread = threading.Thread(target=_spinner,
-                                                     args=(self.spinner,))
-            self.spinner.running = True
-            self.animation.thread.start()
-            sys.stdout = stream.Clean(sys.stdout, self.spinner.stream)
+        if self.enabled:
+            if autopush:
+                self.push_message(self.message)
+                self.spinner.message = ' - '.join(self.animation.messages)
+            if not self.spinner.running:
+                self.animation.thread = threading.Thread(target=_spinner,
+                                                         args=(self.spinner,))
+                self.spinner.running = True
+                self.animation.thread.start()
+                sys.stdout = stream.Clean(sys.stdout, self.spinner.stream)
 
     @classmethod
     def stop(cls):
         """Stop the thread animation gracefully and reset_message"""
-        if cls.spinner.running:
-            cls.spinner.running = False
-            cls.animation.thread.join()
+        if AnimatedDecorator._enabled:
+            if cls.spinner.running:
+                cls.spinner.running = False
+                cls.animation.thread.join()
 
-        if any(cls.animation.messages):
-            cls.pop_message()
+            if any(cls.animation.messages):
+                cls.pop_message()
 
-        sys.stdout = sys.__stdout__
+            sys.stdout = sys.__stdout__
 
     def __enter__(self):
-        self.animation.context += 1
-        self.start()
+        if self.enabled:
+            self.animation.context += 1
+            self.start()
 
     def __exit__(self, *args):
         # if the context manager doesn't running yet
-        self.animation.context -= 1
-        self.pop_message()
-        if self.animation.context == 0:
-            self.stop()
-        else:
-            self.start(autopush=False)
+        if self.enabled:
+            self.animation.context -= 1
+            self.pop_message()
+            if self.animation.context == 0:
+                self.stop()
+            else:
+                self.start(autopush=False)
 
     @classmethod
     def push_message(cls, message):
@@ -334,7 +364,7 @@ class WritingDecorator(decorator.Decorator):
             sys.stdout = sys.__stdout__
 
 
-def _killed():
+def _killed():  # pragma: no cover
     AnimatedDecorator.stop()
     WritingDecorator.stop()
     AnimatedDecorator.spinner.stream.dump.close()
