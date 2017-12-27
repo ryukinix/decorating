@@ -69,10 +69,10 @@ class TestWiredDecorator(unittest.TestCase):
 
     def test_deco_layer1(self):
         """Test decorator with basic usage"""
-        with writing(0.1):
+        with writing(0.01):
             @self.wired('Chisa')
             def _knights():
-                with writing(0.3):
+                with writing(0.03):
                     print('suiciding...')
 
             _knights()
@@ -96,7 +96,7 @@ class TestWiredDecorator(unittest.TestCase):
             print("λ- (open-world 'next-life)")
 
         with self.wired("Lerax"):
-            with writing(0.1):
+            with writing(0.01):
                 print("I don't ever exists")
                 print("But I'm exists.")
                 print("hacking... hacking...")
