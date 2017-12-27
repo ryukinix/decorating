@@ -153,7 +153,7 @@ def space_wave(phase, amplitude=12, frequency=0.1):
 
 def _spinner(control):
     if not sys.stdout.isatty():  # not send to pipe/redirection
-        return
+        return  # pragma: no cover
 
     colorize_no_reset = partial(color.colorize, autoreset=False)
 
@@ -364,7 +364,7 @@ class WritingDecorator(decorator.Decorator):
             sys.stdout = sys.__stdout__
 
 
-def _killed():
+def _killed():  # pragma: no cover
     AnimatedDecorator.stop()
     WritingDecorator.stop()
     AnimatedDecorator.spinner.stream.dump.close()
