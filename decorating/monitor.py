@@ -38,12 +38,23 @@ class MonitorStdout(Decorator):
     def stop(self):
         sys.stdout = sys.__stdout__
 
+    def clear(self):
+        self.data = []
+
+    @property
+    def data(self):
+        return self.stream.data
+
+    @data.setter
+    def data(self, data):
+        self.stream.data = data
+
 
 monitor_stdout = MonitorStdout()
 
 
-def test():
+def test():  # pragma: no cover
     with monitor_stdout:
         print('test')
 
-    print(monitor_stdout.stream.data)
+    print(monitor_stdout.data)
