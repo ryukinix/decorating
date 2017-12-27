@@ -49,6 +49,13 @@ class MonitorStdout(Decorator):
     def data(self, data):
         self.stream.data = data
 
+    @classmethod
+    def __call__(cls, func):
+        import warnings
+        warnings.warn(("MonitorStdout doesn't works as decorator. "
+                       "Use it as contextmanager by 'with' syntax instead"))
+        return func
+
 
 monitor_stdout = MonitorStdout()
 
